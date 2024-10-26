@@ -1,5 +1,5 @@
 
-all: iso
+all: OS
 
 run: 
 	qemu-system-i386 -cdrom TwistedOS.iso
@@ -7,8 +7,8 @@ run:
 iso: 
 	xorriso -as mkisofs -b kernel.bin -no-emul-boot -boot-load-size 4 -o TwistedOS.iso .
 
-Bootloader/boot.o: Bootloader/32Bootloader.asm
-	nasm -f elf Bootloader/32Bootloader.asm -o Bootloader/boot.o
+Bootloader/boot.o: Bootloader/Bootloader.asm
+	nasm -f elf Bootloader/Bootloader.asm -o Bootloader/boot.o
 
 Kernel/kernel.o: Kernel/kernel.c
 	i386-elf-gcc -m32 -c Kernel/kernel.c -o Kernel/kernel.o -nostdlib -ffreestanding
