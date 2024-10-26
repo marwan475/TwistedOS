@@ -1,3 +1,5 @@
+; Basic 16 bit Real mode Bootloader
+
 bits 16 ; starting in 16 bit mode
 org 0x7c00 ; bios loads bootloader to this address, setting offset
 
