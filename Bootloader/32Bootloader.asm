@@ -3,12 +3,26 @@
 bits 16 ; starting in 16 bit mode
 org 0x7c00 ; bios loads bootloader to this address, setting offset
 
-bootloader:
+bootloader: ; Real mode
     mov ax, 0x2401
     int 0x15 ; enable A20
 
     mov ax, 0x3
     int 0x10 ; set vga text mode to a known value
+
+    ; reading from disk, past the boot sector using BIOS interupt
+    mov [DISK],dl ; store drive number which is in dl
+
+	mov ah, 0x2    ; BIOS function read sectors
+	mov al, 1      ; how many sectors to read
+	mov ch, 0      ; what cylinder to read from 
+	mov dh, 0      ; what head to read from
+	mov cl, 2      ; what sector to read from
+	mov dl, [DISK] ; drive number
+	mov bx, disk_sector ; where to load the sector
+	int 0x13
+
+	cli
 
     ; gaining access to 32 bit registers by entering protected mode (Need a GDT to enter protected mode)
 
@@ -18,7 +32,20 @@ bootloader:
     mov eax, cr0
     or eax, 0x1 ; setting the protected mode bit 
     mov cr0, eax
+
+    ; Protected mode starts, cant use BIOS functions in protected mode
+
+    ;setting up segment registers
+    mov ax, DATA_SEGMENT
+    mov ds, ax ; points to data segment
+    mov es, ax ; extra
+    mov fs, ax ; extra
+    mov gs, ax ; extra
+    mov ss, ax ; points to stack segment
+
     jmp CODE_SEGMENT:protected_mode
+
+mov si, 0 ; counter for print function
 
 ; Defining GDT: provides a structured way for the CPU to access memory sections
 GDT_start:
@@ -62,24 +89,26 @@ GDT_Data_Section:
                                   ; 1 - Size (32-bit segment)
                                   ; 00 - Reserved
                                   ; 1111 - Limit high (combined with low limit)
-
+    db 0x0                       ; Reserved byte       
 GDT_end:                        ; End of GDT
 
 GDT_pointer:
     dw GDT_end - GDT_start ; length of GDT
     dd GDT_start ; pointer to structure
+DISK:
+    db 0x0
 CODE_SEGMENT equ GDT_Code_Section - GDT_start ; offset to code section
 DATA_SEGMENT equ GDT_Data_Section - GDT_start ; offset to data section
 
+times 510 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number - 2 for bootsector number
+dw 0xaa55 ;magic number for boot loader
+
+disk_sector:
+
 bits 32
+hello: db "Welcome to TwistedOS",0
+
 protected_mode:
-    ;setting up segment registers
-    mov ax, DATA_SEGMENT
-    mov ds, ax ; points to data segment
-    mov es, ax ; extra
-    mov fs, ax ; extra
-    mov gs, ax ; extra
-    mov ss, ax ; points to stack segment
 
     ; printing to screen using VGA
     mov esi, hello ; load string address into esi
@@ -100,4 +129,4 @@ halt:
     cli
     hlt
 
-hello: db "Welcome to TwistedOS",0
+times 1024 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number
