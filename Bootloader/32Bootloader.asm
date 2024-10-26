@@ -20,7 +20,7 @@ bootloader: ; Real mode
 	mov cl, 2      ; what sector to read from
 	mov dl, [DISK] ; drive number
 	mov bx, disk_sector ; where to load the sector
-	int 0x13
+	int 0x13 ; calling interupt
 
 	cli
 
