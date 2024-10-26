@@ -105,7 +105,7 @@ dw 0xaa55 ;magic number for boot loader
 disk_sector:
 
 bits 32
-hello: db "Welcome to TwistedOS",0
+hello: db "Bootloader loading OS....",0
 
 protected_mode:
 
@@ -125,14 +125,14 @@ protected_mode:
         jmp .loop
 
 halt:
-    mov esp,kernel_stack_top
-	extern kmain
-	call kmain
+    mov esp,KERNEL_STACK
+	extern kernel_main
+	call kernel_main
     cli
     hlt
 
 section .bss
 align 4
-kernel_stack_bottom: equ $
+KERNEL_STACK_BOTTOM: equ $
 	resb 16384 ; 16 KB
-kernel_stack_top:
+KERNEL_STACK:
