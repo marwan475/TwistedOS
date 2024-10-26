@@ -1,8 +1,7 @@
 ; Boot loader that goes into 32 bit protected mode
-
+section .bootloader
 bits 16 ; starting in 16 bit mode
-org 0x7c00 ; bios loads bootloader to this address, setting offset
-
+global bootloader
 bootloader: ; Real mode
     mov ax, 0x2401
     int 0x15 ; enable A20
@@ -14,7 +13,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
 	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 1      ; how many sectors to read
+	mov al, 6     ; how many sectors to read
 	mov ch, 0      ; what cylinder to read from 
 	mov dh, 0      ; what head to read from
 	mov cl, 2      ; what sector to read from
@@ -126,7 +125,14 @@ protected_mode:
         jmp .loop
 
 halt:
+    mov esp,kernel_stack_top
+	extern kmain
+	call kmain
     cli
     hlt
 
-times 1024 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number
+section .bss
+align 4
+kernel_stack_bottom: equ $
+	resb 16384 ; 16 KB
+kernel_stack_top:
