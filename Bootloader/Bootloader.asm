@@ -46,7 +46,7 @@ bootloader: ; Real mode
 
     jmp CODE_SEGMENT:protected_mode
 
-; Defining GDT: provides a structured way for the CPU to access memory sections
+; Defining GDT: provides a structured way for the CPU to access memory sections , setting the rules of memory access
 GDT_start:
     dq 0x0                       ; Null descriptor (must be the first entry)
 
