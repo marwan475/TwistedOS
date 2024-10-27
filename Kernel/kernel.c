@@ -1,4 +1,6 @@
 #include "headers/utility.h"
+#include "headers/kernel.h"
+#include "headers/ports.h"
 
 void kernel_main()
 {

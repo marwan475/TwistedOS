@@ -17,8 +17,11 @@ Kernel/kernel.o: Kernel/kernel.c
 Kernel/include/utility.o: Kernel/include/utility.c
 	i386-elf-gcc -m32 -c Kernel/include/utility.c -o Kernel/include/utility.o -nostdlib -ffreestanding
 
-OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o -o kernel.bin -T Linker/linker.ld
+Kernel/include/ports.o: Kernel/include/ports.c
+	i386-elf-gcc -m32 -c Kernel/include/ports.c -o Kernel/include/ports.o -nostdlib -ffreestanding
+
+OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o -o kernel.bin -T Linker/linker.ld
 
 clean:
 	rm TwistedOS.iso -f

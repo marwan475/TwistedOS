@@ -15,7 +15,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
 	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 6     ; how many sectors to read
+	mov al, 12     ; how many sectors to read
 	mov ch, 0      ; what cylinder to read from 
 	mov dh, 0      ; what head to read from
 	mov cl, 2      ; what sector to read from
@@ -102,7 +102,7 @@ DATA_SEGMENT equ GDT_Data_Section - GDT_start ; offset to data section
 times 510 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number - 2 for bootsector number
 dw 0xaa55 ;magic number for boot loader
 
-disk_sector: ; data read from disk is placed here, currently 6 sectors are loaded
+disk_sector: ; data read from disk is placed here, currently 12 sectors are loaded
 
 bits 32
 hello: db "Bootloader loading OS....",0
