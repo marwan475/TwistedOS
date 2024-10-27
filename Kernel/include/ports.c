@@ -1,5 +1,7 @@
 #include "../headers/ports.h"
 
+// Hardware / port comunication 
+
 void write8bitport(uint16 portnumber,uint8 data){
     // outb is an instruction that sends a byte to a specified port
     __asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));

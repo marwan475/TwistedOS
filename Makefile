@@ -20,7 +20,7 @@ Kernel/include/utility.o: Kernel/include/utility.c
 Kernel/include/ports.o: Kernel/include/ports.c
 	i386-elf-gcc -m32 -c Kernel/include/ports.c -o Kernel/include/ports.o -nostdlib -ffreestanding
 
-OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o
+OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o 
 	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o -o kernel.bin -T Linker/linker.ld
 
 clean:
@@ -28,4 +28,5 @@ clean:
 	rm Bootloader/*.o -f
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
+	rm Kernel/IDT/*.o -f
 	rm kernel.bin -f

@@ -6,5 +6,8 @@ typedef unsigned short uint16;
 typedef unsigned int uint32;
 typedef unsigned long long uint64;
 
+#define FLAG_SET(x, flag) x |= (flag)
+#define FLAG_UNSET(x, flag) x &= ~(flag)
+
 
 #endif
