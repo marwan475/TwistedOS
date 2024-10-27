@@ -2,6 +2,5 @@
 
 void kernel_main()
 {
-    char* hello = "Welcome to Twisted OS";
-    kernelprint(hello);   
+    kernelprint("Welcome to Twisted OS%nThis is Version:%d!",0,1,1);   
 }
