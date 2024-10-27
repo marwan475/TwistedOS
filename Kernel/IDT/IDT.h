@@ -34,8 +34,10 @@ typedef enum {
     IDT_FLAG_PRESENT = 0x80,                // Present flag
 } IDT_FLAGS;
 
+// Declare the IDT as an array of 256 entries (for 256 possible interrupts)
 IDTentry IDT[256];
 
+// Declare an IDT descriptor, initialized with the size of IDT and a pointer to it
 IDTdescription IDTd = {sizeof(IDT) - 1, IDT};
 
 // Inline assembly function to load the IDT
@@ -53,23 +55,36 @@ static inline void LoadIDT(IDTdescription* IDTd) {
     );
 }
 
-void SetIDTEntry(int interupt, void* base,uint16 segmentd,uint8 flags){
-  IDT[interupt].baselow = ((uint32)base) & 0xFFFF;
-  IDT[interupt].segment = segmentd;
-  IDT[interupt].reserved = 0;
-  IDT[interupt].flags =flags;
-  IDT[interupt].basehigh = ((uint32)base >> 16) & 0xFFFF;
+// Function to set an IDT entry
+// Arguments:
+// - interrupt: the interrupt number
+// - base: pointer to the interrupt handler function
+// - segment: code segment selector
+// - flags: flags for the IDT entry, including type and privilege level
+void SetIDTEntry(int interrupt, void* base, uint16 segment, uint8 flags) {
+    IDT[interrupt].baselow = ((uint32)base) & 0xFFFF;            // Lower 16 bits of handler address
+    IDT[interrupt].segment = segment;                            // Segment selector
+    IDT[interrupt].reserved = 0;                                 // Reserved, set to 0
+    IDT[interrupt].flags = flags;                                // Set the flags for the IDT entry
+    IDT[interrupt].basehigh = ((uint32)base >> 16) & 0xFFFF;     // Upper 16 bits of handler address
 }
 
-void EnableIDTEntry(int interupt){
-    FLAG_SET(IDT[interupt].flags,IDT_FLAG_PRESENT);
+// Enable an IDT entry by setting its present flag
+// Arguments:
+// - interrupt: the interrupt number
+void EnableIDTEntry(int interrupt) {
+    FLAG_SET(IDT[interrupt].flags, IDT_FLAG_PRESENT);
 }
 
-void DisableIDTEntry(int interupt){
-    FLAG_UNSET(IDT[interupt].flags,IDT_FLAG_PRESENT);
+// Disable an IDT entry by clearing its present flag
+// Arguments:
+// - interrupt: the interrupt number
+void DisableIDTEntry(int interrupt) {
+    FLAG_UNSET(IDT[interrupt].flags, IDT_FLAG_PRESENT);
 }
 
-void initIDT(){
+// Initialize the IDT by loading the IDT descriptor into the CPU's IDTR register
+void initIDT() {
     LoadIDT(&IDTd);
 }
 
