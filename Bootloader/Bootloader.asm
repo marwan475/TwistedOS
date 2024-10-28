@@ -17,16 +17,18 @@ bootloader: ; Real mode
     ; reading from disk, past the boot sector using BIOS interupt
     mov [DISK],dl ; store drive number which is in dl
 
-	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 24   ; how many sectors to read
-	mov ch, 0      ; what cylinder to read from 
-	mov dh, 0      ; what head to read from
-	mov cl, 2      ; what sector to read from
-	mov dl, [DISK] ; drive number
-	mov bx, disk_sector ; where to load the sector
-	int 0x13 ; calling interupt
+    mov ah, 0x2    ; BIOS function read sectors
+    mov al, 24   ; how many sectors to read
+    mov ch, 0      ; what cylinder to read from 
+    mov dh, 0      ; what head to read from
+    mov cl, 2      ; what sector to read from
+    mov dl, [DISK] ; drive number
+    mov bx, disk_sector ; where to load the sector
+    int 0x13 ; calling interupt
 
-	cli
+    jc disk_read_error    
+
+    cli
 
     ; gaining access to 32 bit registers by entering protected mode (Need a GDT to enter protected mode)
 
@@ -101,6 +103,18 @@ DISK:
     db 0x0
 GDT_CODE_SEGMENT equ GDT_Code_Section - GDT_start ; offset to code section
 GDT_DATA_SEGMENT equ GDT_Data_Section - GDT_start ; offset to data section
+
+errormsg: db "disk read error",0    
+
+disk_read_error:
+  mov si,errormsg ; point si register to hello label memory location
+  mov ah,0x0e  
+  .loop:
+    lodsb
+    or al,al  
+    jz $   
+    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
+    jmp .loop
 
 times 510 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number - 2 for bootsector number
 dw 0xaa55 ;magic number for boot loader
