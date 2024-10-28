@@ -4,6 +4,11 @@
 
 void kernel_main()
 {
-    kernelprint("IDT intialized",0,1);
-    kernelprint("Welcome to Twisted OS%nThis is Version:%d!",0,2,1);   
+    initIDT();
+    kernelprint("Interupt Discriptor Table intialized",0,1);
+
+    ISR_init();
+    kernelprint("Interupt Service Routines intialized",0,2);
+
+    kernelprint("Welcome to Twisted OS",0,3);   
 }

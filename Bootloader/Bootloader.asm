@@ -18,7 +18,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
 	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 23   ; how many sectors to read
+	mov al, 24   ; how many sectors to read
 	mov ch, 0      ; what cylinder to read from 
 	mov dh, 0      ; what head to read from
 	mov cl, 2      ; what sector to read from

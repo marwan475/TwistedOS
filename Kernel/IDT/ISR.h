@@ -26,6 +26,8 @@ typedef struct {
 
 } __attribute((packed)) Registers;
 
+
+
 void ISR_init(){
   SetIDTEntry(0, ISR0, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
   SetIDTEntry(1, ISR1, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
@@ -283,6 +285,8 @@ void ISR_init(){
   SetIDTEntry(253, ISR253, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
   SetIDTEntry(254, ISR254, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
   SetIDTEntry(255, ISR255, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
+
+  for (int i = 0; i < 256; i++)EnableIDTEntry(i);
 }
 
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
