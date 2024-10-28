@@ -4,6 +4,9 @@ section .bootloader ; telling the linker what to put at the start of the binary
 bits 16 ; starting in 16 bit mode
 global bootloader
 
+global GDT_CODE_SEGMENT
+global GDT_DATA_SEGMENT
+
 bootloader: ; Real mode
     mov ax, 0x2401
     int 0x15 ; enable A20
@@ -15,7 +18,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
 	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 12     ; how many sectors to read
+	mov al, 250     ; how many sectors to read
 	mov ch, 0      ; what cylinder to read from 
 	mov dh, 0      ; what head to read from
 	mov cl, 2      ; what sector to read from
@@ -37,14 +40,14 @@ bootloader: ; Real mode
     ; Protected mode starts, cant use BIOS functions in protected mode
 
     ;setting up segment registers
-    mov ax, DATA_SEGMENT
+    mov ax, GDT_DATA_SEGMENT
     mov ds, ax ; points to data segment
     mov es, ax ; extra
     mov fs, ax ; extra
     mov gs, ax ; extra
     mov ss, ax ; points to stack segment
 
-    jmp CODE_SEGMENT:protected_mode
+    jmp GDT_CODE_SEGMENT:protected_mode
 
 ; Defining GDT: provides a structured way for the CPU to access memory sections , setting the rules of memory access
 GDT_start:
@@ -96,8 +99,8 @@ GDT_pointer:
     dd GDT_start ; pointer to structure
 DISK:
     db 0x0
-CODE_SEGMENT equ GDT_Code_Section - GDT_start ; offset to code section
-DATA_SEGMENT equ GDT_Data_Section - GDT_start ; offset to data section
+GDT_CODE_SEGMENT equ GDT_Code_Section - GDT_start ; offset to code section
+GDT_DATA_SEGMENT equ GDT_Data_Section - GDT_start ; offset to data section
 
 times 510 - ($-$$) db 0 ; zeroing out unused parts of sector 512 * sector number - 2 for bootsector number
 dw 0xaa55 ;magic number for boot loader
@@ -135,5 +138,5 @@ section .bss ; data section of unitilized data, data that dosent need to be take
 align 4 ; align the data to be 4 byte / 32 bit
 
 KERNEL_STACK_BOTTOM: equ $
-	resb 16384 ; Reserve 16 KB for the stack
+	resb 163840 ; Reserve 16 KB for the stack
 KERNEL_STACK:

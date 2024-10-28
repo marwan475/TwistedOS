@@ -43,7 +43,7 @@ ISR 5
 ISR 6
 ISR 7
 ISR 9
-SR 15
+ISR 15
 ISR 16
 ISR 18
 ISR 19
@@ -305,7 +305,7 @@ ISRCOMMON:
   ; restore old registers and segments
   pop eax
   mov ds, ax
-  mov es, ax
+  mov es, ax
   mov fs, ax
   mov gs, ax
 
