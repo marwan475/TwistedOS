@@ -18,7 +18,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
 	mov ah, 0x2    ; BIOS function read sectors
-	mov al, 250     ; how many sectors to read
+	mov al, 23   ; how many sectors to read
 	mov ch, 0      ; what cylinder to read from 
 	mov dh, 0      ; what head to read from
 	mov cl, 2      ; what sector to read from
@@ -138,5 +138,5 @@ section .bss ; data section of unitilized data, data that dosent need to be take
 align 4 ; align the data to be 4 byte / 32 bit
 
 KERNEL_STACK_BOTTOM: equ $
-	resb 163840 ; Reserve 16 KB for the stack
+	resb 16384 ; Reserve 16 KB for the stack
 KERNEL_STACK:

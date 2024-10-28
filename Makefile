@@ -2,10 +2,11 @@
 all: OS
 
 run: 
-	qemu-system-i386 -cdrom TwistedOS.iso
+	qemu-system-i386 -drive file=TwistedOS.img,format=raw
 
-iso: 
-	xorriso -as mkisofs -b kernel.bin -no-emul-boot -boot-load-size 4 -o TwistedOS.iso kernel.bin
+img: 
+	dd if=/dev/zero of=TwistedOS.img bs=512 count=2880
+	dd if=kernel.bin of=TwistedOS.img conv=notrunc,fsync
 
 
 Bootloader/boot.o: Bootloader/Bootloader.asm
@@ -23,11 +24,11 @@ Kernel/include/utility.o: Kernel/include/utility.c
 Kernel/include/ports.o: Kernel/include/ports.c
 	i386-elf-gcc -m32 -c Kernel/include/ports.c -o Kernel/include/ports.o -nostdlib -ffreestanding
 
-OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o 
+OS: Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o
 	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o -o kernel.bin -T Linker/linker.ld
 
 clean:
-	rm TwistedOS.iso -f
+	rm TwistedOS.img -f
 	rm Bootloader/*.o -f
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
