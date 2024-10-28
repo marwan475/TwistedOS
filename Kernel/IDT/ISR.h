@@ -290,7 +290,7 @@ void ISR_init(){
 }
 
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
-  kernelprint("interupt number %d",0,1,reg->interrupt_number);
+  kernelprint("interupt number %d",0,6,reg->interrupt_number);
 }
 
 

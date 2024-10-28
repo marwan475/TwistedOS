@@ -10,5 +10,7 @@ void kernel_main()
     ISR_init();
     kernelprint("Interupt Service Routines intialized",0,2);
 
-    kernelprint("Welcome to Twisted OS",0,3);   
+    kernelprint("Welcome to Twisted OS",0,3);
+
+    
 }

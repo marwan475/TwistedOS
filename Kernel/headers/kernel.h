@@ -9,7 +9,11 @@ typedef unsigned long long uint64;
 #define FLAG_SET(x, flag) x |= (flag)
 #define FLAG_UNSET(x, flag) x &= ~(flag)
 
-extern unsigned int GDT_CODE_SEGMENT;
-extern unsigned int GDT_DATA_SEGMENT;
+#define PIC1_COMMAND 0x20
+#define PIC2_COMMAND 0xA0
+#define PIC_EOI 0x20
+
+#define GDT_CODE_SEGMENT 0x08
+#define GDT_DATA_SEGMENT 0x10
 
 #endif

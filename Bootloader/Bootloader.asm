@@ -4,9 +4,6 @@ section .bootloader ; telling the linker what to put at the start of the binary
 bits 16 ; starting in 16 bit mode
 global bootloader
 
-global GDT_CODE_SEGMENT
-global GDT_DATA_SEGMENT
-
 bootloader: ; Real mode
     mov ax, 0x2401
     int 0x15 ; enable A20
@@ -18,7 +15,7 @@ bootloader: ; Real mode
     mov [DISK],dl ; store drive number which is in dl
 
     mov ah, 0x2    ; BIOS function read sectors
-    mov al, 24   ; how many sectors to read
+    mov al, 28   ; how many sectors to read
     mov ch, 0      ; what cylinder to read from 
     mov dh, 0      ; what head to read from
     mov cl, 2      ; what sector to read from
@@ -143,8 +140,8 @@ protected_mode:
 
 halt:
     mov esp,KERNEL_STACK ;point stack pointer to the allocated kernel stack
-	extern kernel_main
-	call kernel_main ; call the C code
+    extern kernel_main
+    call kernel_main ; call the C code
     cli
     hlt
 
