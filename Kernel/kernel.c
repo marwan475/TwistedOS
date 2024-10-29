@@ -14,10 +14,14 @@ void kernel_main()
     PICremap();
     kernelprint("PIC remaped",0,3);
 
-    enableinterrupts();
-    kernelprint("interrupts enabled",0,4);
+    keyboardDriver();
+    kernelprint("keyboard Driver loaded",0,4);
 
-    kernelprint("Welcome to Twisted OS",0,5);
+    enableinterrupts();
+    kernelprint("interrupts enabled",0,5);
+
+
+    kernelprint("Welcome to Twisted OS",0,6);
 
     while(1){
         
