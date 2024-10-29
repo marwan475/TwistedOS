@@ -5,6 +5,8 @@
 
 void kernel_main()
 {
+    kernelprint("Global Discriptor Table loaded",0,0);
+
     initIDT();
     kernelprint("Interupt Discriptor Table intialized",0,1);
 

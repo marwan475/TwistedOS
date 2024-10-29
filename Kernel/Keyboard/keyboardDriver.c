@@ -33,9 +33,9 @@ void keyboardHandler() {
     // Format the scan code as a hexadecimal string
     keychar[0] = '0';
     keychar[1] = 'x';
-    keychar[2] = hex[(key >> 4) & 0x0F]; // Upper nibble
-    keychar[3] = hex[key & 0x0F];        // Lower nibble
-    keychar[4] = '\0';                    // Null-terminate the string
+    keychar[2] = hex[(key >> 4) & 0x0F]; 
+    keychar[3] = hex[key & 0x0F];        
+    keychar[4] = '\0';                    
 
     kernelprint(keychar, 0, 24); // Print the hex representation
 }

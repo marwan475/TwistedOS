@@ -42,4 +42,5 @@ clean:
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
 	rm Kernel/IDT/*.o -f
+	rm Kernel/keyboard/*.o -f
 	rm kernel.bin -f

@@ -305,6 +305,7 @@ void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
 
       if (reg->interrupt_number == 33) keyboardHandler();
 
+      // telling PIC we are done with interrupt
       write8bitportSlow(picMinput, 0x20);
       if (reg->interrupt_number >= 40) write8bitportSlow(picSinput, 0x20); 
     }
