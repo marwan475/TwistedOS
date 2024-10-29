@@ -50,6 +50,64 @@ bootloader:
 
     call printm
 
+    jmp find_root_dir
+
+; finds the LBA and size of root dir for FAT 12
+find_root_dir:
+
+    ; find LBA of root dir = bootsector + fats * sectors per fat
+    mov ax, [bdbSectorsPerFAT]
+    mov bl, [bdbNumberOfFATs]
+    xor bh,bh
+    mul bx
+    add ax, [bdbReservedSectors]
+    push ax 
+
+    ; find size of root dir 32 * num of entries / bytes per sector
+    mov ax, [bdbSectorsPerFAT]
+    shl ax, 5
+    xor dx, dx
+    div word [bdbBytesPerSector]
+
+    test dx,dx
+    jz read_root
+    inc ax
+
+; reads the root dir from disk into memory
+read_root:
+
+    mov cl, al ; read sectors = size of root dir
+    pop ax ; LBA of root dir
+    mov dl, [bsDrivenumber] 
+    mov bx, root_dir ; where to store read
+    call ReadFromDisk
+
+    jmp kernel_search
+
+; searchs for kernel.bin in root dir
+kernel_search:
+
+    xor bx, bx
+    mov di, root_dir
+
+.search:
+    mov si, kernel_file
+    mov cx, 11
+    push di
+    repe cmpsb; compares bytes at ds:si and es:di | repeat while equal cx times
+    pop di
+    je kernel_found
+
+    add di, 32
+    inc bx
+    cmp bx, [bdbEntries]
+    jl .search
+
+    jmp kernelL_error
+
+
+kernel_found:
+
     cli
     hlt
 
@@ -138,5 +196,21 @@ disk_read_error:
     int 0x10 ; runs BIOS interrupt 0x10 - Video Services
     jmp .loop
 
+errorms: db "kernel not found",0    
+
+kernelL_error:
+  mov si,errorms ; point si register to hello label memory location
+  mov ah,0x0e  
+  .loop:
+    lodsb
+    or al,al  
+    jz $   
+    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
+    jmp .loop
+
+kernel_file: db "KERNEL  BIN"
+
 times 510 - ($-$$) db 0
 dw 0xaa55
+
+root_dir:
