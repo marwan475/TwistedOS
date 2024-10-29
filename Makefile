@@ -11,8 +11,11 @@ img: Bootloader/boot.bin OS
 	mcopy -i TwistedOS.img kernel.bin "::kernel.bin"
 
 
-Bootloader/boot.bin: Bootloader/BootloaderREVAMP.asm
-	nasm -f bin Bootloader/BootloaderREVAMP.asm -o Bootloader/boot.bin
+Bootloader/boot.bin: Bootloader/BootloaderSTAGE1.asm
+	nasm -f bin Bootloader/BootloaderSTAGE1.asm -o Bootloader/boot.bin
+
+Bootloader/boot.o: Bootloader/BootloaderSTAGE2.asm
+	nasm -f elf Bootloader/BootloaderSTAGE2.asm -o Bootloader/boot.o
 
 Kernel/IDT/ISR.o: Kernel/IDT/ISR.asm
 	nasm -f elf Kernel/IDT/ISR.asm -o Kernel/IDT/ISR.o
@@ -26,12 +29,13 @@ Kernel/include/utility.o: Kernel/include/utility.c
 Kernel/include/ports.o: Kernel/include/ports.c
 	i386-elf-gcc -m32 -c Kernel/include/ports.c -o Kernel/include/ports.o -nostdlib -ffreestanding
 
-OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding  Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o -o kernel.bin -T Linker/linker.ld
+OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Bootloader/boot.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o -o kernel.bin -T Linker/linker.ld
 
 clean:
 	rm TwistedOS.img -f
 	rm Bootloader/boot.bin -f
+	rm Bootloader/boot.o -f
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
 	rm Kernel/IDT/*.o -f

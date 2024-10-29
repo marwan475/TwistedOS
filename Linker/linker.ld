@@ -1,4 +1,4 @@
-ENTRY(kernel_main)
+ENTRY(start)
 OUTPUT_FORMAT("binary")
 SECTIONS {
     .text :

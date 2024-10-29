@@ -106,7 +106,70 @@ kernel_search:
     jmp kernelL_error
 
 
+; load kernel from disk to memory, proccess FAT chain
 kernel_found:
+    mov ax, [di + 26]
+    mov [kernel_section], ax
+
+    ; load FAT 
+    mov ax, [bdbReservedSectors]
+    mov bx, root_dir
+    mov cl, [bdbSectorsPerFAT]
+    mov dl, [bsDrivenumber]
+    call ReadFromDisk
+
+    mov ax, KERNEL_LOAD
+    mov es, ax
+    mov bx, KERNEL_OFFSET
+
+.loadKernel:
+    mov ax, [kernel_section]
+    add ax, 31 ; LBA of kernel
+
+    ; load one sector of the kernel in
+    mov cl, 1
+    mov dl, [bsDrivenumber]
+    call ReadFromDisk
+
+    ; move to next
+    add bx, [bdbBytesPerSector] ; this will overwrite after 64 kb need too inc es
+
+    mov ax, [kernel_section]
+    mov cx, 3
+    mul cx
+    mov cx, 2
+    div cx
+
+    mov si, root_dir
+    add si, ax
+    mov ax, [ds:si]
+
+    or dx, dx
+    jz .even
+
+.odd:
+    shr ax, 4
+    jz .next_section
+
+.even:
+    and ax, 0x0FFF
+
+.next_section:
+    cmp ax, 0x0FF8 ; kernel fully read in
+    jae kernel_loaded
+
+    mov [kernel_section], ax
+    jmp .loadKernel
+
+; jump to our kernel
+kernel_loaded:
+    mov dl, [bsDrivenumber]
+
+    mov ax, KERNEL_LOAD
+    mov ds, ax
+    mov es, ax
+
+    jmp KERNEL_LOAD:KERNEL_OFFSET
 
     cli
     hlt
@@ -188,18 +251,15 @@ errormsg: db "disk read error",0
 
 disk_read_error:
   mov si,errormsg ; point si register to hello label memory location
-  mov ah,0x0e  
-  .loop:
-    lodsb
-    or al,al  
-    jz $   
-    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
-    jmp .loop
+  jmp print_error
 
 errorms: db "kernel not found",0    
 
 kernelL_error:
   mov si,errorms ; point si register to hello label memory location
+  jmp print_error
+
+print_error:
   mov ah,0x0e  
   .loop:
     lodsb
@@ -209,6 +269,10 @@ kernelL_error:
     jmp .loop
 
 kernel_file: db "KERNEL  BIN"
+kernel_section: dw 0
+
+KERNEL_LOAD equ 0x2000 ; where we will load our kernel
+KERNEL_OFFSET equ 0
 
 times 510 - ($-$$) db 0
 dw 0xaa55
