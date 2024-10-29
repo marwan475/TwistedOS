@@ -40,12 +40,20 @@ bootloader:
 
     mov sp , 0x7C00 ; setting stack pointer
 
+    mov [bsDrivenumber], dl ; saving drive number
+
+    mov ax, 1 ; LBA 1
+    mov cl, 1 ; sectors 1
+    mov bx, 0x7E00
+    call ReadFromDisk
+
+
     hlt
 
 ; Disk functions
 
 ; logical block adressing to Cylinder head sector, puts sector head and cyl in req registers
-LBAtoCHS: 
+LBAtoCHS:
 
     push ax
     push dx
@@ -68,6 +76,47 @@ LBAtoCHS:
     pop ax
     ret
 
+; reads sectors from disk, ax contains LBA, es * 16 + bx is where memory will be stored
+ReadFromDisk:
+
+    push ax
+    push bx
+    push cx
+    push dx
+    push di
+
+    push cx ; save number of sectors
+    call LBAtoCHS
+    pop ax
+
+    ; int 13h interupt used to read from disk registers are already set from past function call
+    mov ah, 02h
+    int 13h
+
+    jc disk_read_error
+
+    popa
+
+    push di
+    push dx
+    push cx
+    push bx
+    push ax
+
+    ret
+
+
+errormsg: db "disk read error",0    
+
+disk_read_error:
+  mov si,errormsg ; point si register to hello label memory location
+  mov ah,0x0e  
+  .loop:
+    lodsb
+    or al,al  
+    jz $   
+    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
+    jmp .loop
 
 times 510 - ($-$$) db 0
 dw 0xaa55
