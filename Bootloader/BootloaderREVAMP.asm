@@ -31,6 +31,7 @@ start:
     jmp bootloader
 
 bootloader:
+
     mov ax, 0x0000
     mov ds, ax ; points to data segment
     mov es, ax ; extra
@@ -47,8 +48,25 @@ bootloader:
     mov bx, 0x7E00
     call ReadFromDisk
 
+    call printm
 
+    cli
     hlt
+
+hello: db "Bootloader...",0    
+
+printm:
+  mov si,hello ; point si register to hello label memory location
+  mov ah,0x0e  
+  .loop:
+    lodsb
+    or al,al  
+    jz endp   
+    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
+    jmp .loop
+
+endp:
+    ret
 
 ; Disk functions
 
@@ -91,17 +109,19 @@ ReadFromDisk:
 
     ; int 13h interupt used to read from disk registers are already set from past function call
     mov ah, 02h
+    pusha
+    stc
     int 13h
 
     jc disk_read_error
 
     popa
 
-    push di
-    push dx
-    push cx
-    push bx
-    push ax
+    pop di
+    pop dx
+    pop cx
+    pop bx
+    pop ax
 
     ret
 
