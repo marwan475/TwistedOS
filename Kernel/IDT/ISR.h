@@ -5,6 +5,7 @@
 #include "../headers/utility.h"
 #include "IDT.h"
 #include "ISRs.h"
+#include "../PIC/PIC.h"
 
 typedef struct {
   uint32 ds;
@@ -291,10 +292,17 @@ void ISR_init(){
 
 // handle any interupts the cpu recieves
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
+  if (reg->interrupt_number == 33)
   kernelprint("interupt number %d",0,24,reg->interrupt_number);
 
-  if (reg->interrupt_number < 32) {kernelprint("CPU exception rec",0,0); panic();}
+  if (reg->interrupt_number < 32) {kernelprint("CPU exception rec",0,0); panic();} // interupts less then 32 are cpu exceptions
   else{
+    // 32 - 42 are hardware interupts we have to handle
+    if (reg->interrupt_number >= 32 && reg->interrupt_number < 42){
+      // sending reponse to interupt to PIC
+      write8bitportSlow(picMinput, 0x20);
+      if (reg->interrupt_number >= 40) write8bitportSlow(picSinput, 0x20); 
+    }
 
   }
 }
