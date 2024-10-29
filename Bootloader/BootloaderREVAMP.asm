@@ -42,5 +42,32 @@ bootloader:
 
     hlt
 
+; Disk functions
+
+; logical block adressing to Cylinder head sector, puts sector head and cyl in req registers
+LBAtoCHS: 
+
+    push ax
+    push dx
+
+    xor dx, dx ; set dx to 0
+    div word [bdbSectorsPerTrack] ; LBA / sectors per track sets awnser in ax and puts remainder in dx
+    inc dx
+    mov cx, dx ; sector 
+
+    xor dx, dx
+    div word [bdbHeadsPerCylinder] ; divide running calc by heads per cyl
+    mov dh, dl ; head
+
+    mov ch, al ; cyl lower 8 bits
+    shl ah, 6
+    or cl, ah ; cylinder
+
+    pop ax
+    mov dl, al
+    pop ax
+    ret
+
+
 times 510 - ($-$$) db 0
 dw 0xaa55
