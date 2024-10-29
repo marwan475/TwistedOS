@@ -29,7 +29,7 @@ entry:
     ; load GDT
     lgdt [GDTD]           
 
-    ; senable protected mode
+    ; enable protected mode
     mov eax, cr0
     or al, 1
     mov cr0, eax
@@ -37,6 +37,7 @@ entry:
     
     jmp dword 08h:protected_mode
 
+; entering protected mode
 protected_mode:
     [bits 32]
     
@@ -53,16 +54,14 @@ protected_mode:
     cld
     rep stosb
 
-    ; expect boot drive in dl, send it as argument to cstart function
-    xor edx, edx
-    mov dl, [DRIVE]
-    push edx
-
+    ; hand control to kernel
+    mov esp,kernel_stack_top
     call kernel_main
 
     cli
     hlt
 
+; Global Discriptor Table
 GDT:    
 	dq 0
 	dw 0FFFFh
@@ -93,6 +92,12 @@ GDTD: dw GDTD - GDT - 1
 	dd GDT
 
 DRIVE: db 0
+
+section .bss
+align 4
+kernel_stack_bottom: equ $
+	resb 16384 ; 16 KB
+kernel_stack_top:
 
 
 

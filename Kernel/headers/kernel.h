@@ -16,4 +16,19 @@ typedef unsigned long long uint64;
 #define GDT_CODE_SEGMENT 0x08
 #define GDT_DATA_SEGMENT 0x10
 
+static inline void panic() {
+    asm volatile (
+        "cli\n"   // Clear Interrupt Flag (disable interrupts)
+        "hlt"     // Halt the CPU
+    );
+}
+
+static inline void enableinterrupts() {
+    asm volatile (
+        "sti"  // Set Interrupt Flag (enable interrupts)
+    );
+}
+
+
+
 #endif

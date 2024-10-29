@@ -27,7 +27,7 @@ typedef struct {
 } __attribute((packed)) Registers;
 
 
-
+// init all isrs in IDT
 void ISR_init(){
   SetIDTEntry(0, ISR0, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
   SetIDTEntry(1, ISR1, GDT_CODE_SEGMENT, IDT_FLAG_RING0 | IDT_FLAG_GATE_32BIT_INT);
@@ -289,8 +289,14 @@ void ISR_init(){
   for (int i = 0; i < 256; i++)EnableIDTEntry(i);
 }
 
+// handle any interupts the cpu recieves
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
-  kernelprint("interupt number %d",0,6,reg->interrupt_number);
+  kernelprint("interupt number %d",0,24,reg->interrupt_number);
+
+  if (reg->interrupt_number < 32) {kernelprint("CPU exception rec",0,0); panic();}
+  else{
+
+  }
 }
 
 
