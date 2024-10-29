@@ -273,8 +273,8 @@ print_error:
 kernel_file: db "KERNEL  BIN"
 kernel_section: dw 0
 
-KERNEL_LOAD equ 0x2000 ; where we will load our kernel
-KERNEL_OFFSET equ 0
+KERNEL_LOAD equ 0x0 ; where we will load our kernel
+KERNEL_OFFSET equ 0x500
 
 times 510 - ($-$$) db 0
 dw 0xaa55

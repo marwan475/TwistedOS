@@ -1,6 +1,11 @@
-ENTRY(start)
+ENTRY(entry)
 OUTPUT_FORMAT("binary")
 SECTIONS {
+    . = 0x0500;
+    .entry :
+    {
+        *(.entry)
+    }
     .text :
     {
         *(.text)
@@ -15,6 +20,8 @@ SECTIONS {
     }
     .bss :
     {
+        __bss_start = .;
         *(.bss)
+        __end = .;
     }
 }
