@@ -132,7 +132,9 @@ kernel_found:
     call ReadFromDisk
 
     ; move to next
-    add bx, [bdbBytesPerSector] ; this will overwrite after 64 kb need too inc es
+    mov ax, es
+    add ax, 0x0020
+    mov es, ax
 
     mov ax, [kernel_section]
     mov cx, 3
