@@ -17,6 +17,9 @@ Bootloader/boot.bin: Bootloader/BootloaderSTAGE1.asm
 Bootloader/boot.o: Bootloader/BootloaderSTAGE2.asm
 	nasm -f elf Bootloader/BootloaderSTAGE2.asm -o Bootloader/boot.o
 
+Kernel/include/BiosFunc.o: Kernel/include/BiosFunc.asm
+	nasm -f elf Kernel/include/BiosFunc.asm -o Kernel/include/BiosFunc.o
+
 Kernel/IDT/ISR.o: Kernel/IDT/ISR.asm
 	nasm -f elf Kernel/IDT/ISR.asm -o Kernel/IDT/ISR.o
 
@@ -35,8 +38,8 @@ Kernel/keyboard/keyboardDriver.o: Kernel/keyboard/keyboardDriver.c
 Kernel/memory/memory.o: Kernel/memory/memory.c
 	i386-elf-gcc -m32 -c Kernel/memory/memory.c -o Kernel/memory/memory.o -nostdlib -ffreestanding
 
-OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Bootloader/boot.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o -o kernel.bin -T Linker/linker.ld
+OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Bootloader/boot.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o Kernel/include/BiosFunc.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/BiosFunc.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o -o kernel.bin -T Linker/linker.ld
 
 clean:
 	rm TwistedOS.img -f
