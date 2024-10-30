@@ -88,8 +88,7 @@ void kernelprintint(int intput,int col, int offset){
     char *output = int_to_string(intput);
 
     int len = kernelstrlen(output); // length of inputed string
-    short* vga = (short*)0xb8000; // adress for VGA buffer
-    const short color = 0x0F00; // color, white on black
+    
 
     for (int i = 0;i<len;i++){
         vga[col + i + 80*offset ] = color | output[i]; // add char to vga buffer at location

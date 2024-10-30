@@ -2,6 +2,7 @@
 #include "headers/kernel.h"
 #include "IDT/ISR.h"
 #include "PIC/PIC.h"
+#include "Memory/memory.h"
 
 void kernel_main()
 {
@@ -22,8 +23,10 @@ void kernel_main()
     enableinterrupts();
     kernelprint("interrupts enabled%n");
 
+    heapinit();
+    kernelprint("Bitmap initialized%n");
 
-    kernelprint("Welcome to Twisted OS V%d %n",1);
+    kernelprint("Welcome to Twisted OS V%n");
 
     while(1){
       console();   

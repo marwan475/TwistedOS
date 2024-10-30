@@ -32,8 +32,11 @@ Kernel/include/ports.o: Kernel/include/ports.c
 Kernel/keyboard/keyboardDriver.o: Kernel/keyboard/keyboardDriver.c
 	i386-elf-gcc -m32 -c Kernel/keyboard/keyboardDriver.c -o Kernel/keyboard/keyboardDriver.o -nostdlib -ffreestanding
 
-OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Bootloader/boot.o Kernel/keyboard/keyboardDriver.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o -o kernel.bin -T Linker/linker.ld
+Kernel/memory/memory.o: Kernel/memory/memory.c
+	i386-elf-gcc -m32 -c Kernel/memory/memory.c -o Kernel/memory/memory.o -nostdlib -ffreestanding
+
+OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Bootloader/boot.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/memory.o -o kernel.bin -T Linker/linker.ld
 
 clean:
 	rm TwistedOS.img -f
@@ -43,4 +46,5 @@ clean:
 	rm Kernel/include/*.o -f
 	rm Kernel/IDT/*.o -f
 	rm Kernel/keyboard/*.o -f
+	rm Kernel/memory/*.o -f
 	rm kernel.bin -f
