@@ -1,5 +1,8 @@
 #include "../headers/utility.h"
 
+int cursor_col = 0;
+int cursor_row = 0;
+
 // Returns Length of inputed string
 int kernelstrlen(char *input){
     int count = 0;
@@ -68,11 +71,13 @@ void kernelprintint(int intput,int col, int offset){
 }
 
 // Writes inputed string to VGA buffer, at col (column) , offset (row) FORMAT: %n is new line %d is int
-void kernelprint(char *output, int col,int offset, ...){
+void kernelprint(char *output, ...){
 
+    int col = cursor_col;
+    int offset = cursor_row;
     // VGA buffer is 80x25, 80 columns 25 rows
 
-    int* args = (int*)&offset+1; // creating pointer to varargs
+    int* args = (int*)&output+1; // creating pointer to varargs
 
     int argc = -1;
     
@@ -100,12 +105,14 @@ void kernelprint(char *output, int col,int offset, ...){
             {argc++;kernelprintint(args[argc],col+count,offset);state = STATE_NORMAL;} // moving to next var arg
             break;
           case 'n':
-            {offset++;count = -1;state = STATE_NORMAL;col = 0;}
+            {offset++;cursor_row++;count = -1;cursor_col = -1;state = STATE_NORMAL;col = 0;}
             break;
         }
       }else {vga[col + count + 80*offset ] = color | output[i];} // add char to vga buffer at location
 
       count++;
+      cursor_col++;
+      
 
     }
 }

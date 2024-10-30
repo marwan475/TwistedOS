@@ -29,6 +29,4 @@ static inline void enableinterrupts() {
     );
 }
 
-
-
 #endif

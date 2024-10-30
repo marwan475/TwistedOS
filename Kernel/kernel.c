@@ -5,25 +5,25 @@
 
 void kernel_main()
 {
-    kernelprint("Global Discriptor Table loaded",0,0);
+    kernelprint("Global Discriptor Table loaded%n");
 
     initIDT();
-    kernelprint("Interupt Discriptor Table intialized",0,1);
+    kernelprint("Interupt Discriptor Table intialized%n");
 
     ISR_init();
-    kernelprint("Interupt Service Routines intialized",0,2);
+    kernelprint("Interupt Service Routines intialized%n");
 
     PICremap();
-    kernelprint("PIC remaped",0,3);
+    kernelprint("PIC remaped%n");
 
     keyboardDriver();
-    kernelprint("keyboard Driver loaded",0,4);
+    kernelprint("keyboard Driver loaded%n");
 
     enableinterrupts();
-    kernelprint("interrupts enabled",0,5);
+    kernelprint("interrupts enabled%n");
 
 
-    kernelprint("Welcome to Twisted OS",0,6);
+    kernelprint("Welcome to Twisted OS V%d %n",1);
 
     while(1){
         

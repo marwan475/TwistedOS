@@ -4,8 +4,11 @@
 #define STATE_NORMAL 0
 #define STATE_FORMAT 1
 
+extern int cursor_col;
+extern int cursor_row;
+
 int kernelstrlen(char *input);
 
-void kernelprint(char *output, int col ,int offset, ...);
+void kernelprint(char *output, ...);
 
 #endif

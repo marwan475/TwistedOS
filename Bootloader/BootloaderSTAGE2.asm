@@ -23,9 +23,13 @@ entry:
     mov ax, 0x3
 	int 0x10 ; set vga txt mode 3
 
+    ; disable cursor
+    mov ah, 0x01
+    mov ch, 0x3F
+    int 0x10
+
     mov ax, 0x2401
 	int 0x15 ; A20 gate
-
     ; load GDT
     lgdt [GDTD]           
 

@@ -71,7 +71,7 @@ void keyboardHandler() {
         char k = scan_code_to_char(key);
 
         keychar[0] = k;
-        kernelprint(keychar,0,24);
+        kernelprint(keychar);
 
         /*
         // Create a buffer for the hexadecimal representation
