@@ -26,7 +26,7 @@ void kernel_main()
     kernelprint("Welcome to Twisted OS V%d %n",1);
 
     while(1){
-        
+      console();   
     }
 
     

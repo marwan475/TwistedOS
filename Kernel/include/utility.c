@@ -2,6 +2,32 @@
 
 int cursor_col = 0;
 int cursor_row = 0;
+short* vga = (short*)0xb8000; // adress for VGA buffer
+const short color = 0x0F00; // color, white on black
+
+void clearscreen(){
+    for (int i = 0;i<25*80;i++){
+      vga[i] = color | ' ';
+    }
+}
+
+void console(){
+    
+    if (cursor_col == 80 && cursor_row == 24){
+      cursor_row = 0;
+      cursor_col =0;
+      clearscreen();
+    }
+
+    if (cursor_col < 0) cursor_col = 0;
+
+    if (cursor_col >= 80){
+      cursor_col = 0;
+      cursor_row++;
+    }
+
+    
+}
 
 // Returns Length of inputed string
 int kernelstrlen(char *input){
@@ -84,9 +110,7 @@ void kernelprint(char *output, ...){
     int state = STATE_NORMAL;
 
     int len = kernelstrlen(output); // length of inputed string
-    short* vga = (short*)0xb8000; // adress for VGA buffer
-    const short color = 0x0F00; // color, white on black
-
+    
     int count = 0;
 
     for (int i = 0; i<len;i++){

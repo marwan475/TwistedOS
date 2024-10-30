@@ -11,4 +11,8 @@ int kernelstrlen(char *input);
 
 void kernelprint(char *output, ...);
 
+void console();
+
+void clearscreen();
+
 #endif
