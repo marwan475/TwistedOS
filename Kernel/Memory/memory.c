@@ -21,10 +21,10 @@ void heapinit(){
 // calculates how many blocks of memory is need
 int calculateblocks(int bytes){
   int total = bytes;
-  int count = 0;
+  int count = 0; 
 
   while(1){
-    total - BLOCK_SIZE;
+    total = total - BLOCK_SIZE;
     if (total <= 0){
       count++;
       break;
@@ -77,6 +77,7 @@ uint8* kernelmalloc(int bytes){
 
   uint8* alloc = (uint8*)((uint32)heap + (uint32) offset);
 
+  kernelprint("Memory Allocated %d %n",index);
   return alloc;
 
   
@@ -94,5 +95,7 @@ void kernelfree(uint8* mem, int bytes){
   int blocks = calculateblocks(bytes);
 
   setbitmap(index,blocks,0);
+
+  kernelprint("Memory freed %d %n",index);
 }
 

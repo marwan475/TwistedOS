@@ -26,6 +26,12 @@ void console(){
       cursor_row++;
     }
 
+    if (cursor_row >= 25){
+      cursor_row = 0;
+      cursor_col = 0;
+      clearscreen();
+    }
+
     
 }
 
@@ -44,6 +50,8 @@ char* int_to_string(int value) {
     static char buffer[12];  // Buffer to hold the resulting string (enough for a 32-bit int + sign + null terminator)
     int is_negative = 0;
     int i = 0;
+
+    value = value + 1100000000;
 
     // Handle 0 explicitly
     if (value == 0) {

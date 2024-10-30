@@ -28,6 +28,11 @@ void kernel_main()
 
     kernelprint("Welcome to Twisted OS V%n");
 
+    uint8* test = kernelmalloc(30000);
+    uint8* test2 = kernelmalloc(30);
+    kernelfree(test,30000);
+    kernelfree(test2,30);
+
     while(1){
       console();   
     }
