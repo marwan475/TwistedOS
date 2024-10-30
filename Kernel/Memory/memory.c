@@ -77,7 +77,7 @@ uint8* kernelmalloc(int bytes){
 
   uint8* alloc = (uint8*)((uint32)heap + (uint32) offset);
 
-  kernelprint("Memory Allocated %d %n",index);
+  //kernelprint("Memory Allocated %d %n %d %n",index,blocks);
   return alloc;
 
   
@@ -96,6 +96,6 @@ void kernelfree(uint8* mem, int bytes){
 
   setbitmap(index,blocks,0);
 
-  kernelprint("Memory freed %d %n",index);
+  //kernelprint("Memory freed %d %n %d %n",index, blocks);
 }
 

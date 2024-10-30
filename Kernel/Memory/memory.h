@@ -5,8 +5,8 @@
 #include "../headers/utility.h"
 
 #define HEAP_MEMORY 0x100000
-#define BLOCK_SIZE 1024
-#define BLOCKS 40
+#define BLOCK_SIZE 1
+#define BLOCKS 40000
 
 void kernelmemset(uint8* buf,int count,uint8 set);
 void heapinit();
