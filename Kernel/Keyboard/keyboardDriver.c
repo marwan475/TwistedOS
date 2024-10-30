@@ -65,8 +65,13 @@ void keyboardHandler() {
     char keychar[2];
     keychar[1] = '\0';
 
+    if (key == 0x0E){
+      cursor_col--;
+      kernelprint(" ");
+      cursor_col--;
+    }
     // if key is not a break code
-    if (key < 0x80){
+    else if (key < 0x80){
 
         char k = scan_code_to_char(key);
 
