@@ -7,13 +7,13 @@ run:
 img: Stage1 Stage2 OS
 	dd if=/dev/zero of=TwistedOS.img bs=512 count=2880
 	mkfs.fat -F 12 -n "NBOS" TwistedOS.img
-	dd if=Bootloader/boot.bin of=TwistedOS.img conv=notrunc
+	dd if=boot.bin of=TwistedOS.img conv=notrunc
 	mcopy -i TwistedOS.img stage2.bin "::stage2.bin"
 	mcopy -i TwistedOS.img kernel.bin "::kernel.bin"
 
 
-Stage1: Bootloader/BootloaderSTAGE1.asm
-	nasm -f bin Bootloader/BootloaderSTAGE1.asm -o Bootloader/boot.bin
+Stage1: Bootloader/Stage1/BootloaderStage1.asm
+	nasm -f bin Bootloader/Stage1/BootloaderStage1.asm -o boot.bin
 
 Bootloader/boot.o: Bootloader/BootloaderSTAGE2.asm
 	nasm -f elf Bootloader/BootloaderSTAGE2.asm -o Bootloader/boot.o
@@ -48,7 +48,7 @@ OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/I
 
 clean:
 	rm TwistedOS.img -f
-	rm Bootloader/boot.bin -f
+	rm boot.bin -f
 	rm Bootloader/*.o -f
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
