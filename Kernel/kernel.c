@@ -3,7 +3,6 @@
 #include "IDT/ISR.h"
 #include "PIC/PIC.h"
 #include "memory/memory.h"
-#include "headers/BiosFunctions.h"
 
 void kernel_main()
 {
@@ -11,8 +10,6 @@ void kernel_main()
 
     initIDT();
     kernelprint("Interupt Discriptor Table intialized%n");
-
-    biosFunc();
 
     ISR_init();
     kernelprint("Interupt Service Routines intialized%n");

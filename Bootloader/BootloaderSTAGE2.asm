@@ -5,7 +5,7 @@ section .entry
 extern __bss_start
 extern __end
 
-extern kernel_main
+;extern kernel_main
 global entry
 
 entry:
@@ -59,8 +59,8 @@ protected_mode:
     rep stosb
 
     ; hand control to kernel
-    mov esp,kernel_stack_top
-    call kernel_main
+    ;mov esp,kernel_stack_top
+    ;call kernel_main
 
     cli
     hlt

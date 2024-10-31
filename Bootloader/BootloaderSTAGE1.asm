@@ -25,7 +25,7 @@ bsUnused: db 0
 bsExtBootSignature: db 29h
 bsSerialNumber: db 10h, 32h, 54h, 74h
 bsVolumeLabel: db "TWISTED OS "
-bsFileSystem db "FAT12   "
+bsFileSystem: db "FAT12   "
 
 start:
     jmp bootloader
@@ -270,7 +270,7 @@ print_error:
     int 0x10 ; runs BIOS interrupt 0x10 - Video Services
     jmp .loop
 
-kernel_file: db "KERNEL  BIN"
+kernel_file: db "STAGE2  BIN"
 kernel_section: dw 0
 
 KERNEL_LOAD equ 0x0 ; where we will load our kernel
@@ -280,3 +280,23 @@ times 510 - ($-$$) db 0
 dw 0xaa55
 
 root_dir:
+
+; LBA of first file in fat12 is 31
+
+;x86 Memory Map 
+;0x00000000 - 0x000003FF - Real Mode Interrupt Vector Table
+;0x00000400 - 0x000004FF - BIOS Data Area
+;0x00000500 - 0x00007BFF - Unused
+;0x00007C00 - 0x00007DFF - Our Bootloader
+;0x00007E00 - 0x0009FFFF - Unused
+;0x000A0000 - 0x000BFFFF - Video RAM (VRAM) Memory
+;0x000B0000 - 0x000B7777 - Monochrome Video Memory
+;0x000B8000 - 0x000BFFFF - Color Video Memory
+;0x000C0000 - 0x000C7FFF - Video ROM BIOS
+;0x000C8000 - 0x000EFFFF - BIOS Shadow Area
+;0x000F0000 - 0x000FFFFF - System BIOS
+
+;Ports
+;0x020-0x02F	Interrupt Controller 1
+;0x060-0x06F	Keyboard/PS2 Moude (Port 0x60) Speaker (0x61)	Keyboard/PS2 Mouse (0x64)
+
