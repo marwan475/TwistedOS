@@ -1,7 +1,7 @@
 # TwistedOS
 
 https://www.ctyme.com/intr/rb-0106.htm 
-https://www.ctyme.com/intr/rb-0607.htm
+https://www.ctyme.com/intr/rb-0607.htm // interrupt codes
 https://www.eit.lth.se/fileadmin/eit/courses/eitn50/Literature/fat12_description.pdf // FAT12
 https://wiki.osdev.org/Rolling_Your_Own_Bootloader
 https://wiki.osdev.org/Creating_an_Operating_System
