@@ -2,7 +2,7 @@
 #include "Disk.h"
 
 void stage2(int LBA){
-  kernelprint("hello from c %d %n",LBA);
+  kernelprint("hello from c %d%n",LBA);
 
   void* buffer = (void*)0xBFFF;
 
