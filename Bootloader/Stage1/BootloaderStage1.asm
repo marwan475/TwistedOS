@@ -115,7 +115,7 @@ read_root:
     mov cl, al
     pop ax
     mov dl, [drivenumber]
-    mov bx, root_dir
+    mov bx, 0x7E00
     call ReadDisk
 
 ; we have the root dir loaded into memory
@@ -123,7 +123,7 @@ read_root:
 file_search:
 
     xor bx, bx
-    mov di, root_dir
+    mov di, 0x7E00
 
 ; goes throuh root dir and searches for entry that matchs our file name    
 .search:
@@ -152,7 +152,7 @@ file_found:
 
     ; load full FAT table
     mov ax, [reservedsectors] ; LBA of first FAT table
-    mov bx, root_dir
+    mov bx, 0xA6FF
     mov cl, [sectorsperFAT]
     mov dl, [drivenumber]
     call ReadDisk
@@ -185,7 +185,7 @@ file_found:
     mov cx, 2
     div cx
 
-    mov si, root_dir
+    mov si, 0xA6FF
     add si, ax
     mov ax, [ds:si]
 
