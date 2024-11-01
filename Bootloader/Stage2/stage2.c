@@ -8,5 +8,9 @@ void stage2(int LBA){
 
   int res = ReadFromDisk((uint8)0,LBA,(uint8)1,buffer);
 
-  kernelprint("Worked %d",res);
+  kernelprint("Worked %d%n",res);
+
+  res = FindNextCluster(LBA);
+
+  kernelprint("Worked 2 %d",res);
 }

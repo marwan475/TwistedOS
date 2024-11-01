@@ -101,3 +101,48 @@ ReadDisk:
     mov esp, ebp
     pop ebp
     ret
+
+global FindNextCluster    
+FindNextCluster:
+    push ebp
+    mov ebp, esp
+
+    mov ax, [bp + 8]
+    sub ax, 31
+    mov cx, 3
+    mul cx
+    mov cx, 2
+    div cx
+
+    mov si, 0xA6FF
+    add si, ax
+    mov ax, [ds:si] 
+
+    or dx, dx
+    jz .even
+
+.odd:
+    shr ax, 4
+    jz .nextcluster
+
+.even:
+    and ax, 0x0FFF
+
+.nextcluster:
+    
+    cmp ax, 0x0FF8
+    jae done
+
+    add ax, 31
+
+    mov esp, ebp
+    pop ebp
+
+    ret
+
+done:
+    mov ax, 0
+    
+    mov esp, ebp
+    pop ebp
+    ret

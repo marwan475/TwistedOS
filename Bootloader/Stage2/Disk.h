@@ -21,4 +21,6 @@ int ReadFromDisk(uint8 disknumber, int LBA, uint8 sectors, void* buffer){
 	return ReadDisk(disknumber,cylinder,sector,head,sectors,buffer);
 }
 
+int __attribute__((cdecl)) FindNextCluster(int LBA);
+
 #endif
