@@ -153,7 +153,7 @@ file_found:
     ; load full FAT table
     mov ax, [reservedsectors] ; LBA of first FAT table
     mov bx, 0xA6FF
-    mov cl, [sectorsperFAT]
+    mov cl, 18 ; 2 * sectors per FAT
     mov dl, [drivenumber]
     call ReadDisk
 

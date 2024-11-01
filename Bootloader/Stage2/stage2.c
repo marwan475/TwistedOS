@@ -14,7 +14,7 @@ uint32* kernel = (uint32*)0x100000;
 
 void stage2(int LBA){
   
-  void* buffer = (void*)0xBFFF;
+  void* buffer = (void*)0xCCFD; // 1 sector after full fat table load in
 
   int next = 0;
   uint32* kernel_buffer = kernel;
