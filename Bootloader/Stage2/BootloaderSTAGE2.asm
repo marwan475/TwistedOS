@@ -60,11 +60,34 @@ protected_mode:
     rep stosb
 
     ; hand control to kernel
-    ;mov esp,kernel_stack_top
-    ;call kernel_main
+    mov esp,kernel_stack_top
+
+    extern stage2
+    call stage2
 
     cli
     hlt
+
+errormsg: db "disk read error",0    
+
+disk_read_error:
+  mov si,errormsg ; point si register to hello label memory location
+  jmp print_error
+
+errorms: db "kernel not found",0    
+
+kernelL_error:
+  mov si,errorms ; point si register to hello label memory location
+  jmp print_error
+
+print_error:
+  mov ah,0x0e  
+  .loop:
+    lodsb
+    or al,al  
+    jz $   
+    int 0x10 ; runs BIOS interrupt 0x10 - Video Services
+    jmp .loop
 
 ; Global Discriptor Table
 GDT:    

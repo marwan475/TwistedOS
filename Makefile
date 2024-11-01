@@ -15,14 +15,17 @@ img: Stage1 Stage2 OS
 Stage1: Bootloader/Stage1/BootloaderStage1.asm
 	nasm -f bin Bootloader/Stage1/BootloaderStage1.asm -o boot.bin
 
-Bootloader/boot.o: Bootloader/BootloaderSTAGE2.asm
-	nasm -f elf Bootloader/BootloaderSTAGE2.asm -o Bootloader/boot.o
+Bootloader/Stage2/boot.o: Bootloader/Stage2/BootloaderSTAGE2.asm
+	nasm -f elf Bootloader/Stage2/BootloaderSTAGE2.asm -o Bootloader/Stage2/boot.o
 
 Boatloader/BiosFunc.o: Bootloader/BiosFunc.asm
 	nasm -f elf Bootloader/BiosFunc.asm -o Bootloader/BiosFunc.o
 
-Stage2: Bootloader/boot.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Bootloader/boot.o -o stage2.bin -T Linker/linker.ld
+Bootloader/Stage2/stage2.o: Bootloader/Stage2/stage2.c
+	i386-elf-gcc -m32 -c Bootloader/Stage2/stage2.c -o Bootloader/Stage2/stage2.o -nostdlib -ffreestanding
+
+Stage2: Bootloader/Stage2/boot.o Bootloader/Stage2/stage2.o Kernel/include/utility.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/include/utility.o Bootloader/Stage2/stage2.o Bootloader/Stage2/boot.o -o stage2.bin -T Linker/linker.ld
 
 
 Kernel/IDT/ISR.o: Kernel/IDT/ISR.asm
@@ -49,7 +52,7 @@ OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/I
 clean:
 	rm TwistedOS.img -f
 	rm boot.bin -f
-	rm Bootloader/*.o -f
+	rm Bootloader/Stage2/*.o -f
 	rm Kernel/*.o -f
 	rm Kernel/include/*.o -f
 	rm Kernel/IDT/*.o -f

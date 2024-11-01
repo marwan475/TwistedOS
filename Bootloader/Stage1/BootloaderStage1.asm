@@ -151,16 +151,16 @@ file_found:
     mov [logicalcluster], ax
 
     ; load full FAT table
-    mov ax, 1 ; LBA of first FAT table
+    mov ax, [reservedsectors] ; LBA of first FAT table
     mov bx, root_dir
     mov cl, [sectorsperFAT]
     mov dl, [drivenumber]
     call ReadDisk
 
     ; where we will load our file, unused 0000:0500
-    mov ax, 0x0000
+    mov ax, LOAD_SEGMENT
     mov es, ax
-    mov bx, 0x500
+    mov bx, LOAD_OFFSET
 
 ; File location = FAT entry number - 2 + 33 (Data region for FAt12) 
 .loadfile:
@@ -210,11 +210,11 @@ file_found:
 file_loaded:
     mov di, [drivenumber]
     
-    mov ax, 0x0000
+    mov ax, LOAD_SEGMENT
     mov ds, ax
     mov es, ax
 
-    jmp 0x0000:0x0500
+    jmp LOAD_SEGMENT:LOAD_OFFSET
 
     cli
     hlt
@@ -302,6 +302,9 @@ print_error:
 
 stage2: db "STAGE2  BIN"
 logicalcluster: dw 0
+
+LOAD_SEGMENT equ 0x0
+LOAD_OFFSET equ 0x500
 
 times 510 - ($-$$) db 0 ; padding unused parts of the bootsector
 dw 0xaa55 ; Bios needs this to be the last 2 bytes of bootsector
