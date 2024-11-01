@@ -5,10 +5,38 @@ section .entry
 extern __bss_start
 extern __end
 
-;extern kernel_main
+LBA: dw 0
+kernel: db "KERNEL  BIN"
+rootentries: dw 224
+
+; Root dir loaded at 0x7E00
+; FAT Table loaded at 0xA6FF
 global entry
 
 entry:
+
+file_search:
+    xor bx, bx
+    mov di, 0x7E00
+.search:
+    mov si, kernel
+    mov cx, 11
+    push di
+    repe cmpsb
+    pop di
+    je file_found
+
+    add di, 32
+    inc bx
+    cmp bx, [rootentries]
+    jl .search
+
+    jmp search_error
+file_found:
+    mov ax, [di + 26]
+    add ax, 31
+    mov [LBA], ax
+
     cli
 
     ; save boot drive
@@ -62,21 +90,18 @@ protected_mode:
     ; hand control to kernel
     mov esp,kernel_stack_top
 
+    movzx eax, word [LBA]
+    push eax
+
     extern stage2
     call stage2
 
     cli
     hlt
 
-errormsg: db "disk read error",0    
-
-disk_read_error:
-  mov si,errormsg ; point si register to hello label memory location
-  jmp print_error
-
 errorms: db "kernel not found",0    
 
-kernelL_error:
+search_error:
   mov si,errorms ; point si register to hello label memory location
   jmp print_error
 
