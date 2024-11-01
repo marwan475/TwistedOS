@@ -11,9 +11,9 @@
     and al, ~1
     mov cr0, eax
 
-    jmp word 0x00:realmode
+    jmp word 0x00:.realmode
 
-.realmode
+.realmode:
 
     ;set up segments
     mov ax, 0x0000
@@ -36,7 +36,7 @@
 
     jmp dword 0x08:.protectedmode
 
-.protectedmode
+.protectedmode:
     [bits 32]
 
     mov ax, 0x10

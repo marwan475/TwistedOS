@@ -18,14 +18,14 @@ Stage1: Bootloader/Stage1/BootloaderStage1.asm
 Bootloader/Stage2/boot.o: Bootloader/Stage2/BootloaderSTAGE2.asm
 	nasm -f elf Bootloader/Stage2/BootloaderSTAGE2.asm -o Bootloader/Stage2/boot.o
 
-Boatloader/BiosFunc.o: Bootloader/BiosFunc.asm
-	nasm -f elf Bootloader/BiosFunc.asm -o Bootloader/BiosFunc.o
+Bootloader/Stage2/disk.o: Bootloader/Stage2/Disk.asm
+	nasm -f elf Bootloader/Stage2/Disk.asm -o Bootloader/Stage2/disk.o
 
 Bootloader/Stage2/stage2.o: Bootloader/Stage2/stage2.c
 	i386-elf-gcc -m32 -c Bootloader/Stage2/stage2.c -o Bootloader/Stage2/stage2.o -nostdlib -ffreestanding
 
-Stage2: Bootloader/Stage2/boot.o Bootloader/Stage2/stage2.o Kernel/include/utility.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/include/utility.o Bootloader/Stage2/stage2.o Bootloader/Stage2/boot.o -o stage2.bin -T Linker/linker.ld
+Stage2: Bootloader/Stage2/boot.o Bootloader/Stage2/stage2.o Kernel/include/utility.o Bootloader/Stage2/disk.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/include/utility.o Bootloader/Stage2/stage2.o Bootloader/Stage2/boot.o Bootloader/Stage2/disk.o -o stage2.bin -T Linker/linker.ld
 
 
 Kernel/IDT/ISR.o: Kernel/IDT/ISR.asm
