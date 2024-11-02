@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "physicalmemory.h"
 
 //contains info on what blocks are allocated
 //each block will e 1024 bytes

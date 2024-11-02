@@ -2,7 +2,7 @@
 #include "headers/kernel.h"
 #include "IDT/ISR.h"
 #include "PIC/PIC.h"
-#include "memory/memory.h"
+#include "memory/physicalmemory.h"
 
 // Start: 0x00100000 | End: 0x00EFFFFF | Size: 0x00E00000 (14 MiB) | RAM -- free for use
 
