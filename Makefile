@@ -57,7 +57,7 @@ clean:
 	rm Bootloader/Stage2/*.o -f
 	rm Kernel/*.o -f
 	rm Kernel/PIC/*.o -f
-	rm Kernal/Terminal/*.o -f
+	rm Kernel/Terminal/*.o -f
 	rm Kernel/IDT/*.o -f
 	rm Kernel/keyboard/*.o -f
 	rm Kernel/memory/*.o -f
