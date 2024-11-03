@@ -78,17 +78,9 @@ protected_mode:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
-   
-    ; clear bss 
-    mov edi, __bss_start
-    mov ecx, __end
-    sub ecx, edi
-    mov al, 0
-    cld
-    rep stosb
 
     ; hand control to kernel
-    mov esp,kernel_stack_top
+    mov esp,0xFFFF
 
     movzx eax, word [LBA]
     push eax
@@ -145,12 +137,6 @@ GDTD: dw GDTD - GDT - 1
 	dd GDT
 
 DRIVE: db 0
-
-section .bss
-align 4
-kernel_stack_bottom: equ $
-	resb 16384 ; 16 KB
-kernel_stack_top:
 
 
 

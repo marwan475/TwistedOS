@@ -23,4 +23,11 @@ int ReadFromDisk(uint8 disknumber, int LBA, uint8 sectors, void* buffer){
 
 int __attribute__((cdecl)) FindNextCluster(int LBA);
 
+void __attribute__((cdecl)) meminfo();
+
+void getmeminfo(uint16* info1, uint16* info2){
+    meminfo;
+    asm("" : "=a"(info1), "=b"(info2));
+}
+
 #endif

@@ -2,7 +2,7 @@
 all: img
 
 run: 
-	qemu-system-i386 -drive file=TwistedOS.img,format=raw,if=floppy
+	qemu-system-i386 -m 128M -drive file=TwistedOS.img,format=raw,if=floppy
 
 img: Stage1 Stage2 OS
 	dd if=/dev/zero of=TwistedOS.img bs=512 count=2880

@@ -25,8 +25,8 @@ void __attribute__((section(".entry"))) kernel_main()
     enableinterrupts();
     kernelprint("interrupts enabled%n");
 
-    heapinit();
-    kernelprint("Bitmap initialized%n");
+    physicalmemoryinit();
+    kernelprint("Physical Memory manager intialized%n");
 
     kernelprint("Welcome to Twisted OS V%n"); 
 

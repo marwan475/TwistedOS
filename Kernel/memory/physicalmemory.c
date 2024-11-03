@@ -1,11 +1,12 @@
 #include "physicalmemory.h"
 
+int memsize = ENDMEM - STARTMEM;
+int maxblocks = (ENDMEM - STARTMEM)/BLOCKSIZE;
+
 //contains info on what blocks are allocated
-//each block will e 1024 bytes
-//40 blocks total
 //will need to init each value to 0
-uint8 bitmap[BLOCKS];
-uint8 *heap = (uint8*) HEAP_MEMORY;
+uint8 bitmap[(ENDMEM - STARTMEM)/BLOCKSIZE];
+uint8 *heap = (uint8*) STARTMEM;
 
 
 void kernelmemset(uint8* buf,int count,uint8 set){
@@ -14,8 +15,10 @@ void kernelmemset(uint8* buf,int count,uint8 set){
   } 
 }
 
-void heapinit(){
-  kernelmemset(bitmap,BLOCKS,0);
+void physicalmemoryinit(){
+  kernelmemset(bitmap,maxblocks,0);
+  // set kernel space as being used
+  kernelmemset(bitmap,KERNELSIZE/BLOCKSIZE,1);
 }
 
 // calculates how many blocks of memory is need
@@ -24,7 +27,7 @@ int calculateblocks(int bytes){
   int count = 0; 
 
   while(1){
-    total = total - BLOCK_SIZE;
+    total = total - BLOCKSIZE;
     if (total <= 0){
       count++;
       break;
@@ -39,7 +42,7 @@ int calculateblocks(int bytes){
 int findFirstFit(int blocks){
   int count = 0;
 
-  for(int i =0;i < BLOCKS;i++){
+  for(int i =0;i < maxblocks;i++){
     if ( bitmap[i] == 0){
       count++;
     }else{
@@ -61,7 +64,7 @@ void setbitmap(int index, int blocks, int value){
 
 // returns offset from heap memory pointer
 int findoffset(int index){
-  return index * BLOCK_SIZE;
+  return index * BLOCKSIZE;
 }
 
 // allocates heap memory based on bytes needed
@@ -77,7 +80,7 @@ uint8* kernelmalloc(int bytes){
 
   uint8* alloc = (uint8*)((uint32)heap + (uint32) offset);
 
-  //kernelprint("Memory Allocated %d %n %d %n",index,blocks);
+  kernelprint("Memory Allocated %d %n %d %n",index,blocks);
   return alloc;
 
   
@@ -86,7 +89,7 @@ uint8* kernelmalloc(int bytes){
 // return bitmap index given memory address
 int findindex(uint8* mem){
   uint8* offset = (uint8*)((uint32)mem - (uint32)heap);
-  return (int) offset/BLOCK_SIZE;
+  return (int) offset/BLOCKSIZE;
 }
 
 // frees alocated memory from bit map
@@ -96,6 +99,6 @@ void kernelfree(uint8* mem, int bytes){
 
   setbitmap(index,blocks,0);
 
-  //kernelprint("Memory freed %d %n %d %n",index, blocks);
+  kernelprint("Memory freed %d %n %d %n",index, blocks);
 }
 
