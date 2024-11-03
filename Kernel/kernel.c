@@ -3,8 +3,9 @@
 #include "IDT/ISR.h"
 #include "PIC/PIC.h"
 #include "memory/physicalmemory.h"
+#include "memory/virtualmemory.h"
 
-// Start: 0x00100000 | End: 0x00EFFFFF | Size: 0x00E00000 (14 MiB) | RAM -- free for use
+// Start: 0x00100000 | End: 0x00FFFFFF | Size: 0x00F00000 (15 MiB) | RAM -- free for use
 
 void __attribute__((section(".entry"))) kernel_main()
 {
@@ -27,6 +28,9 @@ void __attribute__((section(".entry"))) kernel_main()
 
     physicalmemoryinit();
     kernelprint("Physical Memory manager intialized%n");
+
+    virtualinit();
+    kernelprint("Virtual Memory init%n");
 
     kernelprint("Welcome to Twisted OS V%n"); 
 

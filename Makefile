@@ -45,8 +45,11 @@ Kernel/keyboard/keyboardDriver.o: Kernel/keyboard/keyboardDriver.c
 Kernel/memory/physicalmemory.o: Kernel/memory/physicalmemory.c
 	i386-elf-gcc -m32 -c Kernel/memory/physicalmemory.c -o Kernel/memory/physicalmemory.o -nostdlib -ffreestanding
 
-OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o 
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o -o kernel.bin -T Linker/kernellinker.ld
+Kernel/memory/virtualmemory.o: Kernel/memory/virtualmemory.c
+	i386-elf-gcc -m32 -c Kernel/memory/virtualmemory.c -o Kernel/memory/virtualmemory.o -nostdlib -ffreestanding
+
+OS: Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o 
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/kernel.o Kernel/include/utility.o Kernel/include/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o -o kernel.bin -T Linker/kernellinker.ld
 
 clean:
 	rm TwistedOS.img -f
