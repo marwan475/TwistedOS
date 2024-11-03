@@ -5,10 +5,23 @@ int cursor_row = 0;
 short* vga = (short*)0xb8000; // adress for VGA buffer
 const short color = 0x0F00; // color, white on black
 
+int stringcompare(char* s1,char* s2,int size){
+    int check = 1;
+    for (int i = 0;i < size;i++){
+        if (s1[i] != s2[i]){
+            check = 0;
+            break;
+        }
+    }
+    return check;
+}
+
 void clearscreen(){
     for (int i = 0;i<25*80;i++){
       vga[i] = color | ' ';
     }
+    cursor_col = 0;
+    cursor_row = 0;
 }
 
 void console(){
@@ -32,6 +45,9 @@ void console(){
       clearscreen();
     }
 
+    if (cursor_col == 0){
+        kernelprint("twisted@MSI: ");
+    }
     
 }
 

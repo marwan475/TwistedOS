@@ -1,5 +1,9 @@
 #include "keyboard.h"
 #include "../headers/utility.h"
+#include "../memory/physicalmemory.h"
+
+int charcount;
+char inputbuffer[65];
 
 void keyboardDriver(){
 
@@ -21,42 +25,47 @@ void keyboardDriver(){
     // enable keyboard scanning
     write8bitportSlow(dataport,0xF4);
 
+    kernelmemset(inputbuffer,65,0);
 }
 
 // returns char based on scan code
 char scan_code_to_char(uint8 code) {
     switch (code) {
-        case 0x1E: return 'A';
-        case 0x30: return 'B';
-        case 0x2E: return 'C';
-        case 0x20: return 'D';
-        case 0x12: return 'E';
-        case 0x21: return 'F';
-        case 0x22: return 'G';
-        case 0x23: return 'H';
-        case 0x17: return 'I';
-        case 0x24: return 'J';
-        case 0x25: return 'K';
-        case 0x26: return 'L';
-        case 0x32: return 'M';
-        case 0x31: return 'N';
-        case 0x18: return 'O';
-        case 0x19: return 'P';
-        case 0x10: return 'Q';
-        case 0x13: return 'R';
-        case 0x1F: return 'S';
-        case 0x14: return 'T';
-        case 0x16: return 'U';
-        case 0x2F: return 'V';
-        case 0x11: return 'W';
-        case 0x2D: return 'X';
-        case 0x15: return 'Y';
-        case 0x2C: return 'Z'; 
+        case 0x1E: return 'a';
+        case 0x30: return 'b';
+        case 0x2E: return 'c';
+        case 0x20: return 'd';
+        case 0x12: return 'e';
+        case 0x21: return 'f';
+        case 0x22: return 'g';
+        case 0x23: return 'h';
+        case 0x17: return 'i';
+        case 0x24: return 'j';
+        case 0x25: return 'k';
+        case 0x26: return 'l';
+        case 0x32: return 'm';
+        case 0x31: return 'n';
+        case 0x18: return 'o';
+        case 0x19: return 'p';
+        case 0x10: return 'q';
+        case 0x13: return 'r';
+        case 0x1F: return 's';
+        case 0x14: return 't';
+        case 0x16: return 'u';
+        case 0x2F: return 'v';
+        case 0x11: return 'w';
+        case 0x2D: return 'x';
+        case 0x15: return 'y';
+        case 0x2C: return 'z'; 
         case 0x35: return '/';
         case 0x34: return '.';
         case 0x39: return ' '; // space
         default: return '\0';       // Return null character for unknown codes
     }
+}
+
+void command(char* buf){
+    if (stringcompare("clear",buf,5))clearscreen();
 }
 
 void keyboardHandler() {
@@ -65,11 +74,15 @@ void keyboardHandler() {
     char keychar[2];
     keychar[1] = '\0';
 
-    if (key == 0x0E){
-      cursor_col--;
-      kernelprint(" ");
-      cursor_col--;
+    // Enter
+    if (key == 0x1C){
+        cursor_col = 0;
+        cursor_row++;
+        command(inputbuffer);
+        charcount = 0;
+        kernelmemset(inputbuffer,65,0);
     }
+
     // if key is not a break code
     else if (key < 0x80){
 
@@ -77,6 +90,16 @@ void keyboardHandler() {
 
         keychar[0] = k;
         kernelprint(keychar);
+        inputbuffer[charcount] = k;
+        charcount++;
+
+        if (charcount >= 65){
+            charcount = 0;
+            kernelmemset(inputbuffer,65,0);
+            cursor_col = 0;
+            cursor_row ++;
+            kernelprint("MAX COMMAND REACHED%n");
+        }
 
         /*
         // Create a buffer for the hexadecimal representation
