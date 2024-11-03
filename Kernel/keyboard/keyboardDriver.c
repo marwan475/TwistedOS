@@ -74,8 +74,18 @@ void keyboardHandler() {
     char keychar[2];
     keychar[1] = '\0';
 
+    // Backspace
+    if (key == 0x0E){
+        cursor_col--;
+        kernelprint(" ");
+        cursor_col--;
+        charcount--;
+        inputbuffer[charcount] = 0;
+        
+    }
+
     // Enter
-    if (key == 0x1C){
+    else if (key == 0x1C){
         cursor_col = 0;
         cursor_row++;
         command(inputbuffer);
