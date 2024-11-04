@@ -1,7 +1,7 @@
 ENTRY(entry)
 OUTPUT_FORMAT("binary")
 SECTIONS {
-    . = 0x0500;
+    . = 0xD2FD;
     .entry :
     {
         *(.entry)

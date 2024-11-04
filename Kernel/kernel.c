@@ -5,6 +5,8 @@
 #include "memory/physicalmemory.h"
 #include "memory/virtualmemory.h"
 #include "TSS/TSS.h"
+#include "PCI/PCI.h"
+
 // Start: 0x00100000 | End: 0x00FFFFFF | Size: 0x00F00000 (15 MiB) | RAM -- free for use
 
 uint8 kernel_cs = 0x08 | 0;

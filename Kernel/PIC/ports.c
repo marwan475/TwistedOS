@@ -24,7 +24,7 @@ void write16bitport(uint16 portnumber,uint16 data){
     __asm__ volatile("outw %0, %1" : : "a" (data), "Nd" (portnumber));
 }
 
-uint8 read16bitport(uint16 portnumber){
+uint16 read16bitport(uint16 portnumber){
     uint16 result;
     // inw is an instruction that reads a word from a specified port
     __asm__ volatile("inw %1, %0" : "=a" (result) : "Nd" (portnumber));
@@ -41,7 +41,7 @@ void write32bitport(uint16 portnumber,uint32 data){
     __asm__ volatile("outl %0, %1" : : "a" (data), "Nd" (portnumber));
 }
 
-uint8 read32bitport(uint16 portnumber){
+uint32 read32bitport(uint16 portnumber){
     uint32 result;
     // inl is an instruction that reads a long from a specified port
     __asm__ volatile("inl %1, %0" : "=a" (result) : "Nd" (portnumber));

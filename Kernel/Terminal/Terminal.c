@@ -1,4 +1,5 @@
 #include "../headers/utility.h"
+#include "../headers/kernel.h"
 
 int cursor_col = 0;
 int cursor_row = 0;
@@ -60,6 +61,14 @@ int kernelstrlen(char *input){
         curchar = input[count];
     }
     return count;
+}
+
+void printhex(uint8 h){
+    char* t = "00";
+    char* hex = "0123456789ABCDEF";
+    t[0] = hex[(h >> 4) & 0xF];
+    t[1] = hex[h & 0xF];
+    kernelprint(t);
 }
 
 char* int_to_string(int value) {
@@ -150,6 +159,9 @@ void kernelprint(char *output, ...){
         switch (output[i]) {
           case 'd':
             {argc++;kernelprintint(args[argc],col+count,offset);state = STATE_NORMAL;} // moving to next var arg
+            break;
+          case 'h':
+            {argc++;printhex(args[argc]);state = STATE_NORMAL;} // moving to next var arg
             break;
           case 'n':
             {offset++;cursor_row++;count = -1;cursor_col = -1;state = STATE_NORMAL;col = 0;}

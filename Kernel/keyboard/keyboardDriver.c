@@ -2,6 +2,8 @@
 #include "../headers/utility.h"
 #include "../memory/physicalmemory.h"
 
+extern void enumeratedevices();
+
 int charcount;
 char inputbuffer[65];
 
@@ -66,6 +68,7 @@ char scan_code_to_char(uint8 code) {
 
 void command(char* buf){
     if (stringcompare("clear",buf,5))clearscreen();
+    if (stringcompare("devices",buf,7))enumeratedevices();
 }
 
 void keyboardHandler() {

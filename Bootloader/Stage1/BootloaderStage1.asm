@@ -304,7 +304,7 @@ stage2: db "STAGE2  BIN"
 logicalcluster: dw 0
 
 LOAD_SEGMENT equ 0x0
-LOAD_OFFSET equ 0x500
+LOAD_OFFSET equ 0xD2FD ; unused area after where we load full fat table
 
 times 510 - ($-$$) db 0 ; padding unused parts of the bootsector
 dw 0xaa55 ; Bios needs this to be the last 2 bytes of bootsector
