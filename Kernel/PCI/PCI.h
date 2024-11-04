@@ -21,6 +21,14 @@ struct Deviceinfo {
 	uint8 revision;
 };
 
+//Base address register
+struct Bar {
+	int pre;
+	uint8* addr;
+	uint32 size;
+	int type; // 1 for I/O 0 for mem map
+};
+
 // Read/write data to/from PCI->bus->device->function->offset
 uint32 readpci(uint16 bus, uint16 device, uint16 function, uint32 offset) {
     uint32 id = 0x80000000 | (bus << 16) | (device << 11) | (function << 8) | (offset & 0xFC);
@@ -62,6 +70,28 @@ struct Deviceinfo getdeviceinfo(uint16 bus, uint16 device, uint16 function){
 	return res;
 }
 
+struct Bar Getdeviceaddr(uint16 bus, uint16 device, uint16 function,uint16 bar){
+	struct Bar br;
+
+	uint32 header = readpci(bus,device,function,0x0E) & 0x7F;
+	int max = 6 - (4*header);
+	if (bar >= max) return br;
+
+	uint32 bv = readpci(bus,device,function,0x10 + 4*bar);
+	br.type = (bv & 0x1);
+
+	uint32 tmp;
+
+	if (br.type == 1){// I/O
+		br.addr = (uint8*)(bv & ~0x3);
+		br.pre = 0;
+	}else { // mem map
+
+	}
+
+	return br;
+}
+
 void enumeratedevices(){
 	for (int bus = 0;bus<8;bus++){
 		for (int device = 0; device < 32; device++){
@@ -77,6 +107,13 @@ void enumeratedevices(){
 
 				if (d.vendor == 0x0000 || d.vendor == 0xFFFF) continue;
 
+				for (int b = 0;b<6;b++){
+					struct Bar br = Getdeviceaddr(bus,device,function,b);
+					if (br.addr && (br.type == 1)){
+						d.portbase = (uint32) br.addr;
+					}
+				}
+
 				kernelprint("%nbus : %h device: %h ", bus & 0xFF, device & 0xFF);
 				kernelprint("function : %h ",function & 0xFF);
 				kernelprint("Vendor: %h%h ",(d.vendor & 0xFF00) >> 8,d.vendor & 0xFF);
@@ -88,5 +125,7 @@ void enumeratedevices(){
 		}
 	}
 }
+
+
 
 #endif
