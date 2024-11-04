@@ -107,32 +107,56 @@ print_error:
     jmp .loop
 
 ; Global Discriptor Table
-GDT:    
+GDT:   
 	dq 0
+	;32 bit code
 	dw 0FFFFh
 	dw 0
 	db 0
 	db 10011010b
 	db 11001111b
 	db 0
+
+	;32 bit data
 	dw 0FFFFh
 	dw 0
 	db 0
 	db 10010010b
 	db 11001111b
 	db 0
+	
+	;16 bit code
 	dw 0FFFFh
 	dw 0
 	db 0
 	db 10011010b
 	db 00001111b
 	db 0
+	
+	;16 bit data
 	dw 0FFFFh
 	dw 0
 	db 0
 	db 10010010b
 	db 00001111b
 	db 0
+
+; User mode code segment
+	dw 0FFFFh                  ; Limit (low 16 bits)
+	dw 0                       ; Base (low 16 bits)
+	db 0                       ; Base (next 8 bits)
+	db 11111010b               ; Access byte: Present, DPL=3, Executable, Readable
+	db 11001111b               ; Granularity: 4KB, 32-bit
+	db 0                       ; Base (high 8 bits)
+
+; User mode data segment
+	dw 0FFFFh                  ; Limit (low 16 bits)
+	dw 0                       ; Base (low 16 bits)
+	db 0                       ; Base (next 8 bits)
+	db 11110010b               ; Access byte: Present, DPL=3, Readable/Writable
+	db 11001111b               ; Granularity: 4KB, 32-bit
+	db 0                       ; Base (high 8 bits)
+
 GDTD: dw GDTD - GDT - 1
 	dd GDT
 

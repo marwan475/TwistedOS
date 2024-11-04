@@ -9,6 +9,7 @@
 
 void __attribute__((section(".entry"))) kernel_main()
 {
+
     kernelprint("Global Discriptor Table loaded%n");
 
     initIDT();
