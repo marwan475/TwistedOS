@@ -36,6 +36,25 @@ void flush_tss(uint16 sel) {
     __asm__ __volatile__("ltr %0" : : "r"(sel));
 }
 
+void tss_set_stack () {
+	
+	uint32 base = (uint32) 0x79FF;
+
+	struct tss_entry* TSS = (struct tss_entry*)base;
+
+	uint32 stack;
+
+	// Inline assembly to get the current value of ESP
+	__asm__ volatile (
+		"mov %%esp, %0"   // Move ESP into the variable 'stack'
+		: "=r" (stack)    // Output operand
+	);
+
+	TSS->ss0 = 0x10;
+	TSS->esp0 = stack;
+}
+
+
 void instalTSS(){
 	uint32 base = (uint32) 0x79FF;
 

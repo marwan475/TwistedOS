@@ -15,6 +15,8 @@ uint8 user_ss = 0x30 | 3; //0x33
 __attribute__((naked, noreturn))
 void switch_to_user_mode(uint32 stack_addr, uint32 code_addr)
 {
+    tss_set_stack();
+
     asm volatile(" \
         push $0x33 \n\
         push %0 \n\
@@ -53,6 +55,7 @@ void __attribute__((section(".entry"))) kernel_main()
 
     kernelprint("Welcome to Twisted OS V%n"); 
 
+    
     while(1){
       console();   
     }
