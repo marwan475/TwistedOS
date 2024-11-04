@@ -109,7 +109,7 @@ print_error:
 ; Global Discriptor Table: defines the properties and permisions of memory sections
 GDT:   
 	dq 0
-	;32 bit code
+	;32 bit code 0x08
 	dw 0FFFFh
 	dw 0
 	db 0
@@ -117,7 +117,7 @@ GDT:
 	db 11001111b
 	db 0
 
-	;32 bit data
+	;32 bit data 0x10
 	dw 0FFFFh
 	dw 0
 	db 0
@@ -125,7 +125,7 @@ GDT:
 	db 11001111b
 	db 0
 	
-	;16 bit code
+	;16 bit code 0x18
 	dw 0FFFFh
 	dw 0
 	db 0
@@ -133,7 +133,7 @@ GDT:
 	db 00001111b
 	db 0
 	
-	;16 bit data
+	;16 bit data 0x20
 	dw 0FFFFh
 	dw 0
 	db 0
@@ -141,7 +141,7 @@ GDT:
 	db 00001111b
 	db 0
 
-; User mode code segment
+; User mode code segment 0x28
 	dw 0FFFFh                  ; Limit (low 16 bits)
 	dw 0                       ; Base (low 16 bits)
 	db 0                       ; Base (next 8 bits)
@@ -149,7 +149,7 @@ GDT:
 	db 11001111b               ; Granularity: 4KB, 32-bit
 	db 0                       ; Base (high 8 bits)
 
-; User mode data segment
+; User mode data segment 0x30
 	dw 0FFFFh                  ; Limit (low 16 bits)
 	dw 0                       ; Base (low 16 bits)
 	db 0                       ; Base (next 8 bits)
@@ -157,8 +157,23 @@ GDT:
 	db 11001111b               ; Granularity: 4KB, 32-bit
 	db 0                       ; Base (high 8 bits)
 
+; idx for TSS 0x38
+	dw TSS_LIMIT
+	dw TSS_BASE_L
+	db TSS_BASE_M
+	db 10001001b
+	db 00000000b
+	db TSS_BASE_H
+
 GDTD: dw GDTD - GDT - 1
 	dd GDT
+
+TSS_BASE equ 0x79FF
+TSS_LIMIT equ 103 ; base size - 1
+
+TSS_BASE_L equ TSS_BASE & 0xFFFF
+TSS_BASE_M equ (TSS_BASE >> 16) & 0xFF
+TSS_BASE_H equ (TSS_BASE >> 24) & 0xFF
 
 DRIVE: db 0
 

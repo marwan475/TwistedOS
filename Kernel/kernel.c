@@ -4,7 +4,7 @@
 #include "PIC/PIC.h"
 #include "memory/physicalmemory.h"
 #include "memory/virtualmemory.h"
-
+#include "TSS/TSS.h"
 // Start: 0x00100000 | End: 0x00FFFFFF | Size: 0x00F00000 (15 MiB) | RAM -- free for use
 
 uint8 kernel_cs = 0x08 | 0;
@@ -27,7 +27,7 @@ void switch_to_user_mode(uint32 stack_addr, uint32 code_addr)
 
 void __attribute__((section(".entry"))) kernel_main()
 {
-
+    instalTSS();
     kernelprint("Global Discriptor Table loaded%n");
 
     initIDT();
