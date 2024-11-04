@@ -106,7 +106,7 @@ print_error:
     int 0x10 ; runs BIOS interrupt 0x10 - Video Services
     jmp .loop
 
-; Global Discriptor Table
+; Global Discriptor Table: defines the properties and permisions of memory sections
 GDT:   
 	dq 0
 	;32 bit code
