@@ -29,6 +29,12 @@ void PICremap() {
     // Unmask all IRQs
     write8bitportSlow(picMoutput, 0x00);  // Unmask Master IRQs
     write8bitportSlow(picSoutput, 0x00);  // Unmask Slave IRQs
+    
+    //write8bitportSlow(picSoutput, 0xFB);   // Unmask Slave IRQs (0-7), mask IRQ 11
+    
+    //uint8 mask = read8bitport(picSoutput); // Read from Slave PIC mask
+        //mask &= ~(1 << (11 - 8)); // Clear the specific bit to enable the IRQ
+        //write8bitport(picSoutput, mask); // Write the updated mask back
 }
 
 

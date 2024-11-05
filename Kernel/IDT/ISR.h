@@ -7,6 +7,7 @@
 #include "ISRs.h"
 #include "../PIC/PIC.h"
 #include "../keyboard/keyboard.h"
+#include "../PCI/PCI.h"
 
 typedef struct {
   uint32 ds;
@@ -291,13 +292,13 @@ void ISR_init(){
   for (int i = 0; i < 256; i++)EnableIDTEntry(i);
 }
 
-
 // handle any interupts the cpu recieves
 // 32 is timer interrupt
 // 33 is keyboard interupts
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
 
 
+  if (reg->interrupt_number != 32 && reg->interrupt_number != 33)kernelprint("interrupt %d%n",reg->interrupt_number);
 
   if (reg->interrupt_number < 32) {kernelprint("CPU exception rec %d",reg->interrupt_number); panic();} // interupts less then 32 are cpu exceptions
   else{
