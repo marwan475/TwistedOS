@@ -297,6 +297,8 @@ void ISR_init(){
 // 33 is keyboard interupts
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
 
+
+
   if (reg->interrupt_number < 32) {kernelprint("CPU exception rec %d",reg->interrupt_number); panic();} // interupts less then 32 are cpu exceptions
   else{
     // 32 - 42 are hardware interupts we have to handle

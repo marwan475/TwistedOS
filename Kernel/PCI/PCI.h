@@ -3,31 +3,10 @@
 
 #include "../headers/ports.h"
 #include "../headers/utility.h"
+#include "Device.h"
 
 #define PCIDATAPORT 0xCFC 
 #define PCICMDPORT 0xCF8
-
-struct Deviceinfo {
-	uint32 portbase;
-	uint32 interrupt;
-	uint16 bus;
-	uint16 device;
-	uint16 function;
-	uint16 vendor;
-	uint16 deviceid;
-	uint8 classid;
-	uint8 subclass;
-	uint8 interface;
-	uint8 revision;
-};
-
-//Base address register
-struct Bar {
-	int pre;
-	uint8* addr;
-	uint32 size;
-	int type; // 1 for I/O 0 for mem map
-};
 
 // Read/write data to/from PCI->bus->device->function->offset
 uint32 readpci(uint16 bus, uint16 device, uint16 function, uint32 offset) {
@@ -90,6 +69,19 @@ struct Bar Getdeviceaddr(uint16 bus, uint16 device, uint16 function,uint16 bar){
 	}
 
 	return br;
+}
+
+struct Deviceinfo getdevice(uint16 bus, uint16 device, uint16 function){
+	struct Deviceinfo d = getdeviceinfo(bus,device,function);
+
+	for (int b =0;b<6;b++){
+		struct Bar br = Getdeviceaddr(bus,device,function,b);
+		if (br.addr && (br.type == 1)){
+			d.portbase = (uint32) br.addr;
+		}
+	}
+
+	return d;
 }
 
 void enumeratedevices(){

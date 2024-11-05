@@ -6,6 +6,7 @@
 #include "memory/virtualmemory.h"
 #include "TSS/TSS.h"
 #include "PCI/PCI.h"
+#include "Network/PCnetDriver.h"
 
 // Start: 0x00100000 | End: 0x00FFFFFF | Size: 0x00F00000 (15 MiB) | RAM -- free for use
 
@@ -56,8 +57,9 @@ void __attribute__((section(".entry"))) kernel_main()
     kernelprint("Virtual Memory init%n");
 
     kernelprint("Welcome to Twisted OS V%n"); 
-
     
+    initNIC();
+
     while(1){
       console();   
     }
