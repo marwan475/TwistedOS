@@ -308,13 +308,15 @@ void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
       // sending reponse to interupt to PIC
 
       if (reg->interrupt_number == 33) keyboardHandler();
-
-      // telling PIC we are done with interrupt
-      write8bitportSlow(picMinput, 0x20);
-      if (reg->interrupt_number >= 40) write8bitportSlow(picSinput, 0x20); 
+ 
     }
 
     if (reg->interrupt_number == 43) NICISR43handler();
+
+    
+    // telling PIC we are done with interrupt
+    write8bitportSlow(picMinput, 0x20);
+    if (reg->interrupt_number >= 40) write8bitportSlow(picSinput, 0x20);
 
   }
 }
