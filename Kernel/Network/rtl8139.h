@@ -86,6 +86,7 @@ void recvpacket(){
     // skip header
     buff += 2;
 
+    // Free this
     uint8* packet = kernelmalloc(packetlength);
 
     curpacket = (curpacket + packetlength + 4 + 3) & RPMASK;
@@ -93,6 +94,8 @@ void recvpacket(){
     if (curpacket > RECBUFFERSIZE) curpacket -= RECBUFFERSIZE;
 
     write16bitport(BASEADDR+ CAPR,curpacket - 0x10);
+
+    kernelprint("Packet Recieved%n");
 
 }
 
@@ -107,9 +110,7 @@ void NICISR43handler(){
 
 	//bit 0 is Recive OK
 	if (status == 0x0001){
-	    recvpacket();
-	    kernelprint("%n%d%n",read8bitport(BASEADDR+RCMD));
-	    kernelprint("%n%d%n",read16bitport(BASEADDR+INTSTATUS)); 
+	    recvpacket(); 
 	}
 
 	// bit 3 is transmit ok
