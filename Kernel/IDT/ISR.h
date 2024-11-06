@@ -8,6 +8,7 @@
 #include "../PIC/PIC.h"
 #include "../keyboard/keyboard.h"
 #include "../PCI/PCI.h"
+#include "../Network/rtl8139.h"
 
 typedef struct {
   uint32 ds;
@@ -312,6 +313,8 @@ void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
       write8bitportSlow(picMinput, 0x20);
       if (reg->interrupt_number >= 40) write8bitportSlow(picSinput, 0x20); 
     }
+
+    if (reg->interrupt_number == 43) NICISR43handler();
 
   }
 }

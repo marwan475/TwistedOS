@@ -4,6 +4,7 @@
 #include "../headers/kernel.h"
 #include "../headers/ports.h"
 #include "../PCI/PCI.h"
+#include "../memory/physicalmemory.h"
 
 #define RCMD 0x37 // cmd regist offset
 #define CONFIG1 0x52 // config 1 register offset
@@ -11,7 +12,11 @@
 #define PCICMD 0x04 // pci cmd offset
 #define RBUFFER 0x30 // recv buffer addr offset
 #define INTMASK 0x3C // interrupt mask register
+#define INTSTATUS 0x3E // interrupt status register
 #define RCR 0x44 // Recive Config Register
+
+uint32* recvbuffer;
+uint32* transmitbuffer;
 
 void initNIC(){
 
@@ -43,19 +48,19 @@ void initNIC(){
     // init recive buffer, need to send the card a memroy location it can use to store recv data
     
     // allocate space for reciving needs to be 8192+16 bytes
-    uint32* recvbuffer = (uint32*)kernelmalloc(8192+16+1500);
+    recvbuffer = (uint32*)kernelmalloc(8192+16+1500);
 
     write32bitport(BASEADDR+RBUFFER,(uint32)recvbuffer);
+
+    transmitbuffer = (uint32*)kernelmalloc(1536);
 
 
     // setting interrupt mask, at reset all interrupts are disabled so all bits are sit to 0
     
     // set all bits to high except reserved
     write16bitport(BASEADDR+INTMASK,0xE1FF);
-    
 
-    //write16bitport(BASEADDR+0x3E,0x01);
-    //kernelprint("%n%d%n",read16bitport(BASEADDR+0x3E));
+    
     
     // writing to RCR to tell it what packets to accept
     // setting warp bit to high to tell it to overflow if packet is big
@@ -65,5 +70,21 @@ void initNIC(){
     write8bitport(BASEADDR+RCMD,0x0C);
     
 }
+
+void NICISR43handler(){
+    
+    uint16 status = read16bitport(BASEADDR+INTSTATUS);
+    
+    
+
+    //bit 0 is Recive OK
+    if (status == 0x0001){
+	write16bitport(BASEADDR+INTSTATUS,0x0001);
+	kernelprint("%n%d%n",status);
+    }
+
+
+}
+
 
 #endif
