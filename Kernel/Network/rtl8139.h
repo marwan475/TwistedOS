@@ -14,6 +14,10 @@
 #define INTMASK 0x3C // interrupt mask register
 #define INTSTATUS 0x3E // interrupt status register
 #define RCR 0x44 // Recive Config Register
+#define CAPR 0x38 // current address of packet read
+
+#define RECBUFFERSIZE 8192
+#define RPMASK (~3)
 
 uint32* recvbuffer;
 uint32* transmitbuffer;
@@ -58,7 +62,7 @@ void initNIC(){
     // setting interrupt mask, at reset all interrupts are disabled so all bits are sit to 0
     
     // set all bits to high except reserved
-    write16bitport(BASEADDR+INTMASK,0xE1FF);
+    write16bitport(BASEADDR+INTMASK,0x0005);
 
     
     
@@ -71,20 +75,58 @@ void initNIC(){
     
 }
 
+uint32 curpacket = 0;
+
+void recvpacket(){
+    uint16 * buff = (uint16*)(recvbuffer + curpacket);
+
+    // get packet length from packet header
+    uint16 packetlength = *(buff + 1);
+
+    // skip header
+    buff += 2;
+
+    uint8* packet = kernelmalloc(packetlength);
+
+    curpacket = (curpacket + packetlength + 4 + 3) & RPMASK;
+
+    if (curpacket > RECBUFFERSIZE) curpacket -= RECBUFFERSIZE;
+
+    write16bitport(BASEADDR+ CAPR,curpacket - 0x10);
+
+}
+
 void NICISR43handler(){
+
+    while (1){
+	uint16 status = read16bitport(BASEADDR+INTSTATUS);
+
+	if (status == 0) break;
+
+	write16bitport(BASEADDR+INTSTATUS,status);
+
+	//bit 0 is Recive OK
+	if (status == 0x0001){
+	    recvpacket();
+	    kernelprint("%n%d%n",read8bitport(BASEADDR+RCMD));
+	    kernelprint("%n%d%n",read16bitport(BASEADDR+INTSTATUS)); 
+	}
+
+	// bit 3 is transmit ok
+	if (status == 0x0004){
+
+	}
+
+    }
     
-    uint16 status = read16bitport(BASEADDR+INTSTATUS);
     
     
 
-    //bit 0 is Recive OK
-    if (status == 0x0001){
-	write16bitport(BASEADDR+INTSTATUS,0x0001);
-	kernelprint("%n%d%n",status);
-    }
+    
 
 
 }
+
 
 
 #endif

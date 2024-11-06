@@ -60,7 +60,7 @@ void __attribute__((section(".entry"))) kernel_main()
     initNIC();
 
     while(1){
-      //console();   
+      console();   
     }
 
     
