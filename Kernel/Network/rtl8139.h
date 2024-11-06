@@ -5,10 +5,13 @@
 #include "../headers/ports.h"
 #include "../PCI/PCI.h"
 
-#define RCMD 0x37
-#define CONFIG1 0x52
-#define BASEADDR 0xC000
-#define PCICMD 0x04
+#define RCMD 0x37 // cmd regist offset
+#define CONFIG1 0x52 // config 1 register offset
+#define BASEADDR 0xC000 // base io addr
+#define PCICMD 0x04 // pci cmd offset
+#define RBUFFER 0x30 // recv buffer addr offset
+#define INTMASK 0x3C // interrupt mask register
+#define RCR 0x44 // Recive Config Register
 
 void initNIC(){
 
@@ -23,36 +26,44 @@ void initNIC(){
 
     readpci(0,3,0,PCICMD);
     if (t == 0x107)
-    kernelprint("%n%d%n",t);
+    kernelprint("PCI bus mastering enabled for NIC%n");
 
-
-    uint16 command_port = BASEADDR + RCMD;
-    uint16 data_port = BASEADDR;
+    // insuring device is in active high, default value of LWACT(bit 4 in) and LWPTN is 0 meaning the LWAKE pin is in active high
+    write8bitportSlow(BASEADDR + CONFIG1,0x00);
     
-    // MAC ADDR
-    uint8 status= read8bitport(data_port);
+    // Software reset
+    // Clear RX and TX buffers
+    // seting bit 4 in CMD register to 0 (RST) force software rest once done the bit is set back to 0
+    // bug in qemu, bit 4 is set to 1, i printed before and after doing reset to confirm reset is working and it is
 
-    kernelprint("%n%d%n",status);
+    write8bitport(BASEADDR + RCMD, 0x10);
+    // wait until software rest is complete, check for RST bit
+    while((read8bitport(BASEADDR+RCMD) & 0x10) != 0){}
 
-    status = read8bitport(data_port+0x01);
+    // init recive buffer, need to send the card a memroy location it can use to store recv data
+    
+    // allocate space for reciving needs to be 8192+16 bytes
+    uint32* recvbuffer = (uint32*)kernelmalloc(8192+16+1500);
 
-    kernelprint("%n%d%n",status );
+    write32bitport(BASEADDR+RBUFFER,(uint32)recvbuffer);
 
-    status = read8bitport(data_port +0x02);
 
-    kernelprint("%n%d%n",status);
+    // setting interrupt mask, at reset all interrupts are disabled so all bits are sit to 0
+    
+    // set all bits to high except reserved
+    write16bitport(BASEADDR+INTMASK,0xE1FF);
+    
 
-    status = read8bitport(data_port +0x03);
-
-    kernelprint("%n%d%n",status);
-
-    status = read8bitport(data_port+ 0x4);
-
-    kernelprint("%n%d%n",status);
-
-    status = read8bitport(data_port +0x5);
-
-    kernelprint("%n%d%n",status);
+    //write16bitport(BASEADDR+0x3E,0x01);
+    //kernelprint("%n%d%n",read16bitport(BASEADDR+0x3E));
+    
+    // writing to RCR to tell it what packets to accept
+    // setting warp bit to high to tell it to overflow if packet is big
+    write32bitport(BASEADDR+RCR,0x1F | (1 << 7));
+   
+    // enabling reciving and transmiting by setting comand bits 2 and 3 to high
+    write8bitport(BASEADDR+RCMD,0x0C);
+    
 }
 
 #endif

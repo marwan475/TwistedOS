@@ -2,7 +2,7 @@
 all: img
 
 run: 
-	qemu-system-i386 -m 128M -drive file=TwistedOS.img,format=raw,if=floppy -device rtl8139,netdev=net0 -netdev user,id=net0
+	qemu-system-i386 -m 128M -drive file=TwistedOS.img,format=raw,if=floppy -net nic,model=rtl8139 -net user,hostfwd=tcp::5555-:8080,hostfwd=udp::5555-:8080
 
 img: Stage1 Stage2 OS
 	dd if=/dev/zero of=TwistedOS.img bs=512 count=2880
