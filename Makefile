@@ -68,5 +68,7 @@ clean:
 	rm Kernel/IDT/*.o -f
 	rm Kernel/keyboard/*.o -f
 	rm Kernel/memory/*.o -f
+	rm Kernel/Network/*.o -f
+	rm Kernel/PCI/*.o -f
 	rm kernel.bin -f
 	rm stage2.bin -f
