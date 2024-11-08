@@ -15,12 +15,16 @@
 #define INTSTATUS 0x3E // interrupt status register
 #define RCR 0x44 // Recive Config Register
 #define CAPR 0x38 // current address of packet read
+#define MACADDR1 0x00
+#define MACADDR2 0x04
 
 #define RECBUFFERSIZE 8192
 #define RPMASK (~3)
 
 uint32* recvbuffer;
 uint32* transmitbuffer;
+
+uint32 curpacket = 0;
 
 // TXAD registers, used for sending data, need to use a diffrent one each time
 uint8 TXAD[4] = {0x20,0x24,0x28,0x2C};
@@ -80,7 +84,23 @@ void initNIC(){
     
 }
 
-uint32 curpacket = 0;
+void readMAC(){
+
+    uint8 MAC[6];
+
+    uint32 MAC1 = read32bitport(BASEADDR + MACADDR1);
+    uint16 MAC2 = read16bitport(BASEADDR + MACADDR2);
+
+    MAC[0] = MAC1 >> 0;
+    MAC[1] = MAC1 >> 8;
+    MAC[2] = MAC1 >> 16;
+    MAC[3] = MAC1 >> 24;
+    MAC[4] = MAC2 >> 0;
+    MAC[5] = MAC2 >> 8;
+
+    kernelprint("MAC: %h:%h:%h:%h:%h:%h %n",MAC[0],MAC[1],MAC[2],MAC[3],MAC[4],MAC[5]);
+    
+}
 
 void recvpacket(){
     uint16 * buff = (uint16*)(recvbuffer + curpacket);
@@ -138,12 +158,6 @@ void NICISR43handler(){
 	}
 
     }
-    
-    
-    
-
-    
-
 
 }
 

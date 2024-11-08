@@ -59,6 +59,8 @@ void __attribute__((section(".entry"))) kernel_main()
 
     initNIC();
 
+    readMAC();
+
     while(1){
       console();   
     }
