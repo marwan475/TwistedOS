@@ -15,5 +15,6 @@ void kernelmemset(uint8* buf,int count,uint8 set);
 void physicalmemoryinit();
 uint8* kernelmalloc(int bytes);
 void kernelfree(uint8* mem, int bytes);
+void kernelmemcopy(uint8* dest, uint8* source, int bytes);
 
 #endif

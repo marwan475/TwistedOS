@@ -8,6 +8,11 @@ int maxblocks = (ENDMEM - STARTMEM)/BLOCKSIZE;
 uint8 bitmap[(ENDMEM - STARTMEM)/BLOCKSIZE];
 uint8 *heap = (uint8*) STARTMEM;
 
+void kernelmemcopy(uint8* dest, uint8* source, int bytes){
+  for (int i = 0; i < bytes; i++){
+    dest[i] = source[i];
+  }
+}
 
 void kernelmemset(uint8* buf,int count,uint8 set){
   for (int i = 0; i < count;i++){

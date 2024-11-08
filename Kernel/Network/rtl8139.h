@@ -22,6 +22,11 @@
 uint32* recvbuffer;
 uint32* transmitbuffer;
 
+// TXAD registers, used for sending data, need to use a diffrent one each time
+uint8 TXAD[4] = {0x20,0x24,0x28,0x2C};
+uint8 TSD[4] = {0x10,0x14,0x18,0x1C};
+int curtx = 0;
+
 void initNIC(){
 
     // Reading PCI cmd register
@@ -89,6 +94,8 @@ void recvpacket(){
     // Free this
     uint8* packet = kernelmalloc(packetlength);
 
+    kernelmemcopy(packet,(uint8*)buff,packetlength);
+
     curpacket = (curpacket + packetlength + 4 + 3) & RPMASK;
 
     if (curpacket > RECBUFFERSIZE) curpacket -= RECBUFFERSIZE;
@@ -97,6 +104,18 @@ void recvpacket(){
 
     kernelprint("Packet Recieved%n");
 
+    kernelfree(packet,packetlength);
+
+}
+
+void sendpacket(void* frame, uint32 len){
+    
+    write32bitport(BASEADDR + TXAD[curtx],(uint32)frame);
+    write32bitport(BASEADDR + TSD[curtx],len);
+
+    curtx++;
+
+    if(curtx > 3) curtx = 0;
 }
 
 void NICISR43handler(){
