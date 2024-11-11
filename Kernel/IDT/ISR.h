@@ -299,7 +299,7 @@ void ISR_init(){
 void __attribute__((cdecl)) ISRHANDLER(Registers* reg){
 
 
-  if (reg->interrupt_number != 32 && reg->interrupt_number != 33)kernelprint("interrupt %d%n",reg->interrupt_number);
+  //if (reg->interrupt_number != 32 && reg->interrupt_number != 33)kernelprint("interrupt %d%n",reg->interrupt_number);
 
   if (reg->interrupt_number < 32) {kernelprint("CPU exception rec %d",reg->interrupt_number); panic();} // interupts less then 32 are cpu exceptions
   else{

@@ -54,9 +54,12 @@ Kernel/Network/rtl8139.o: Kernel/Network/rtl8139.c
 Kernel/PCI/PCI.o: Kernel/PCI/PCI.c
 	i386-elf-gcc -m32 -c Kernel/PCI/PCI.c -o Kernel/PCI/PCI.o -nostdlib -ffreestanding
 
+Kernel/Network/ethernet.o: Kernel/Network/ethernet.c
+	i386-elf-gcc -m32 -c Kernel/Network/ethernet.c -o Kernel/Network/ethernet.o -nostdlib -ffreestanding
 
-OS: Kernel/kernel.o Kernel/Terminal/Terminal.o Kernel/PIC/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o Kernel/Network/rtl8139.o Kernel/PCI/PCI.o
-	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/kernel.o Kernel/Terminal/Terminal.o Kernel/PIC/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o Kernel/PCI/PCI.o Kernel/Network/rtl8139.o -o kernel.bin -T Linker/kernellinker.ld
+
+OS: Kernel/kernel.o Kernel/Terminal/Terminal.o Kernel/PIC/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o Kernel/Network/rtl8139.o Kernel/PCI/PCI.o Kernel/Network/ethernet.o
+	i386-elf-gcc -m32 -nostdlib -ffreestanding Kernel/kernel.o Kernel/Terminal/Terminal.o Kernel/PIC/ports.o Kernel/IDT/ISR.o Kernel/keyboard/keyboardDriver.o Kernel/memory/physicalmemory.o Kernel/memory/virtualmemory.o Kernel/PCI/PCI.o Kernel/Network/rtl8139.o Kernel/Network/ethernet.o -o kernel.bin -T Linker/kernellinker.ld
 
 clean:
 	rm TwistedOS.img -f

@@ -1,4 +1,5 @@
 #include "rtl8139.h"
+#include "ethernet.h"
 
 uint32* recvbuffer;
 uint32* transmitbuffer;
@@ -97,14 +98,14 @@ void recvpacket(){
     uint8* packet = kernelmalloc(packetlength);
     kernelmemcopy(packet,(uint8*)buff,packetlength);
 
+    ethernethandlerecv(packet,packetlength);
+
     // +4 to packet length includes header the align pointer using 3 and RPMASK
     curpacket = (curpacket + packetlength + 4 + 3) & RPMASK;
 
-    if (curpacket > RECBUFFERSIZE) curpacket -= RECBUFFERSIZE;
+    if (curpacket > RECBUFFERSIZE) curpacket -= RECBUFFERSIZE; 
 
-    write16bitport(BASEADDR+ CAPR,curpacket - 0x10);
-
-    kernelprint("Packet Recieved%n");
+    write16bitport(BASEADDR+ CAPR,curpacket - 0x10); 
 
     kernelfree(packet,packetlength);
 
