@@ -17,3 +17,5 @@ https://wiki.osdev.org/RTL8139
 http://realtek.info/pdf/rtl8139cp.pdf
 https://ics.uci.edu/~harris/ics216/pci/PCI_22.pdf
 https://github.com/dreamportdev/Osdev-Notes/tree/master/06_Userspace
+https://en.wikipedia.org/wiki/Ethernet_frame
+https://en.wikipedia.org/wiki/Address_Resolution_Protocol
