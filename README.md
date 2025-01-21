@@ -28,7 +28,7 @@ x86 32 bit OS from scratch
 - Initializes network card driver for rtl8139
   - card sends interrupt any time a packet is recv or sent
 - ethernet layer
- - checks if packet is an ARP request or IPv4
+  - checks if packet is an ARP request or IPv4
 - Console support
   - console printing support for output and debugging
   - user is able to enter commands
